@@ -29,7 +29,7 @@ arch==6.2.0
 # Streaming & async
 kafka-python==2.0.2
 asyncio-mqtt==0.16.1
-aiohttp==3.9.1
+aiohttp==3.12.14
 
 # WebSocket clients
 websocket-client==1.6.4
