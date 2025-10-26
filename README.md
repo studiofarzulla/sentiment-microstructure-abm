@@ -138,7 +138,7 @@ If you use this code in your research:
   title = {Sentiment-Microstructure Agent-Based Model},
   author = {Farzulla Research},
   year = {2025},
-  url = {https://github.com/yourusername/sentiment-microstructure-abm}
+  url = {https://github.com/studiofarzulla/sentiment-microstructure-abm}
 }
 ```
 
