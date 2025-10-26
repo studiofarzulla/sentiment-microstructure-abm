@@ -10,7 +10,7 @@ mesa==2.1.5
 
 # Deep learning & NLP
 torch==2.1.0
-transformers==4.35.0
+transformers==4.53.0
 sentencepiece==0.1.99
 
 # Uncertainty quantification for sentiment
