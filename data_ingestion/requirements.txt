@@ -1,0 +1,13 @@
+# Reddit Sentiment Data Ingestion Dependencies
+
+# Reddit API client
+praw>=7.7.1
+
+# Kafka Python client
+kafka-python>=2.0.2
+
+# Environment variable management
+python-dotenv>=1.0.0
+
+# Optional: Type hints (Python 3.8+)
+# typing-extensions>=4.0.0
