@@ -10,12 +10,8 @@ mesa==2.1.5
 
 # Deep learning & NLP
 torch==2.8.0
-transformers==4.35.0
+transformers==4.53.0
 sentencepiece==0.1.99
-
-# Uncertainty quantification for sentiment
-# Note: Polygraph will be installed from GitHub
-# pip install git+https://github.com/IINemo/lm-polygraph.git
 
 # Data processing
 numpy==1.24.3
@@ -29,7 +25,7 @@ arch==6.2.0
 # Streaming & async
 kafka-python==2.0.2
 asyncio-mqtt==0.16.1
-aiohttp==3.9.1
+aiohttp==3.12.14
 
 # WebSocket clients
 websocket-client==1.6.4
