@@ -21,7 +21,7 @@ This project implements an agent-based market simulator that combines:
 
 ```
 Data Layer:         Binance WebSocket → Kafka → Feature Engineering
-Sentiment Layer:    Reddit API → Polygraph (DistilRoBERTa) → Uncertainty Quantification
+Sentiment Layer:    Reddit API → DistilRoBERTa (MC Dropout) → Uncertainty Quantification
 Regime Layer:       DFM (rolling window) → Latent Factors (mood, volatility, liquidity)
 Simulation Layer:   Mesa ABM → 4 Agent Types → Order Matching Engine
 Monitoring Layer:   TimescaleDB → Plotly Dash Dashboard
@@ -89,7 +89,7 @@ python monitoring/dashboard.py
 
 ## Key Features
 
-- **Uncertainty-aware sentiment**: Polygraph provides epistemic + aleatoric uncertainty estimates
+- **Uncertainty-aware sentiment**: Monte Carlo Dropout provides epistemic + aleatoric uncertainty estimates
 - **Multi-agent realism**: 4 agent archetypes with distinct behavioral rules
 - **Regime detection**: DFM extracts latent factors (market mood, volatility regime, liquidity stress)
 - **Full streaming**: Kafka pipeline handles real-time order books + sentiment
@@ -113,7 +113,7 @@ python monitoring/dashboard.py
 🚧 **Phase 1: Foundation (20% Complete)**
 
 - ✅ Data ingestion (Binance WebSocket + Reddit API with threading)
-- ✅ Sentiment analyzer (Polygraph with MC Dropout uncertainty)
+- ✅ Sentiment analyzer (DistilRoBERTa with MC Dropout uncertainty)
 - ✅ Configuration management (Pydantic validation)
 - ✅ Test suite (82 tests across modules)
 - 🚧 Agent implementations (TODO)
@@ -149,7 +149,7 @@ MIT License - See LICENSE file for details
 ## Acknowledgments
 
 - Built with [Mesa](https://github.com/projectmesa/mesa) for agent-based modeling
-- Sentiment analysis powered by [Polygraph](https://github.com/IINemo/lm-polygraph)
+- Sentiment analysis using [DistilRoBERTa](https://huggingface.co/distilroberta-base) with Monte Carlo Dropout
 - Market data from [Binance](https://binance.com) WebSocket API
 - Social sentiment from Reddit via [PRAW](https://praw.readthedocs.io/)
 

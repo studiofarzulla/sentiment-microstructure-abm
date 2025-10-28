@@ -271,7 +271,7 @@ Once tests are fully adapted and running:
 
 4. **Verify MC Dropout Produces Variance**
    - This is THE critical test for epistemic uncertainty
-   - If this fails, the entire Polygraph methodology is broken
+   - If this fails, the entire Monte Carlo Dropout methodology is broken
 
 ### Optional Enhancements
 

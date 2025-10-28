@@ -11,7 +11,7 @@ This test suite provides **80%+ code coverage** with tests spanning unit, integr
 ```
 tests/
 ├── conftest.py                    # Shared fixtures and pytest configuration
-├── test_sentiment_analyzer.py     # PolygraphSentimentAnalyzer tests
+├── test_sentiment_analyzer.py     # Monte Carlo DropoutSentimentAnalyzer tests
 ├── test_reddit_client.py          # RedditClient tests
 ├── test_binance_client.py         # BinanceOrderBookClient tests
 └── README.md                      # This file

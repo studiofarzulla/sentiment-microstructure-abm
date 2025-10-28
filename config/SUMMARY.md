@@ -162,7 +162,7 @@ reddit = praw.Reddit(
 )
 
 # Sentiment model
-analyzer = PolygraphSentimentAnalyzer(
+analyzer = Monte Carlo DropoutSentimentAnalyzer(
     model_name=settings.sentiment.model_name,
     n_mc_samples=settings.sentiment.mc_samples,
     ewma_alpha=settings.sentiment.ewma_alpha,

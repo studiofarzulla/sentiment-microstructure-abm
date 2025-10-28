@@ -30,7 +30,7 @@
   - Runs as standalone service
 
 ### Feature Engineering Layer
-- [x] **Polygraph Sentiment Analyzer** (`feature_engineering/sentiment_analyzer.py`)
+- [x] **Monte Carlo Dropout Sentiment Analyzer** (`feature_engineering/sentiment_analyzer.py`)
   - DistilRoBERTa-based sentiment classification
   - Monte Carlo Dropout for epistemic uncertainty
   - Shannon entropy for aleatoric uncertainty
@@ -203,7 +203,7 @@ sentiment-microstructure-abm/
 - plotly, dash, sqlalchemy
 
 ### To Install
-- Polygraph: `pip install git+https://github.com/IINemo/lm-polygraph.git`
+- Monte Carlo Dropout: `pip install git+https://github.com/IINemo/lm-polygraph.git`
 - Fine-tuning datasets: CryptoBERT, FinBERT tweet corpus
 
 ### Homelab Setup

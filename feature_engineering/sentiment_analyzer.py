@@ -1,5 +1,5 @@
 """
-Polygraph Sentiment Analyzer with Uncertainty Quantification
+Sentiment Analyzer with Monte Carlo Dropout Uncertainty Quantification
 
 Fine-tuned DistilRoBERTa for crypto sentiment with epistemic and aleatoric uncertainty.
 Uses Monte Carlo Dropout for epistemic uncertainty estimation.
@@ -84,7 +84,7 @@ class SentimentEWMATracker:
 
 class PolygraphSentimentAnalyzer:
     """
-    Uncertainty-aware sentiment analysis using Polygraph methodology.
+    Uncertainty-aware sentiment analysis using Monte Carlo Dropout.
 
     Returns (sentiment_score, epistemic_uncertainty, aleatoric_uncertainty)
 
@@ -150,7 +150,7 @@ class PolygraphSentimentAnalyzer:
         # EWMA tracker (now separate class to prevent state corruption)
         self.ewma_tracker = SentimentEWMATracker(alpha=ewma_alpha)
 
-        logger.info(f"Initialized Polygraph analyzer with {model_name}")
+        logger.info(f"Initialized sentiment analyzer with {model_name}")
         logger.info(f"MC samples: {self.n_samples}, EWMA alpha: {ewma_alpha}")
 
     def _configure_mc_dropout(self) -> None:
