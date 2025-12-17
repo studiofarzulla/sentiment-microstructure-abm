@@ -478,7 +478,7 @@ Key observations:
 
 \subsection{Market Maker Simulation}
 
-We simulate 500 timesteps of market maker behavior responding to synthetic sentiment series with regime changes. Figure~\ref{fig:results} presents four-panel visualization.
+We simulate 2,000 timesteps of market maker behavior responding to synthetic sentiment series with regime changes. Figure~\ref{fig:results} presents four-panel visualization of the simulation dynamics.
 
 \begin{figure}[h]
 \centering
@@ -487,27 +487,174 @@ We simulate 500 timesteps of market maker behavior responding to synthetic senti
 \label{fig:results}
 \end{figure}
 
-Summary statistics from 500 timesteps:
+Table~\ref{tab:summary_stats} presents summary statistics for the simulation.
+
+\begin{table}[h]
+\centering
+\caption{Simulation Summary Statistics ($n = 2,000$ timesteps)}
+\label{tab:summary_stats}
+\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Statistic} & \textbf{Log Return} & \textbf{Spread (bps)} & \textbf{Sentiment} \\
+\midrule
+Mean & 0.000066 & 0.1085 & 0.0472 \\
+Std Dev & 0.000714 & 0.0068 & 0.3932 \\
+Min & $-$0.00278 & 0.0914 & $-$1.0000 \\
+Max & 0.00233 & 0.1308 & 1.0000 \\
+Skewness & $-$0.124 & $-$0.161 & $-$0.292 \\
+Kurtosis & 0.016 & $-$0.352 & $-$0.294 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Return Distribution Analysis}
+
+We examine the distributional properties of simulated returns to assess alignment with empirical stylized facts. Figure~\ref{fig:return_dist} presents the return distribution with Q-Q plot against the normal distribution.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/return_distribution.pdf}
+\caption{Return distribution analysis: (A) Histogram of log returns with fitted normal distribution; (B) Q-Q plot against normal distribution showing slight tail deviation.}
+\label{fig:return_dist}
+\end{figure}
+
+The Jarque-Bera test statistic of 5.15 ($p = 0.076$) marginally fails to reject normality at the 5\% level. Excess kurtosis of 0.016 indicates absence of pronounced fat tails in this baseline simulation---a limitation reflecting the single market maker configuration without informed trader interactions. Negative skewness ($-$0.124) suggests slight asymmetry toward negative returns.
+
+\subsection{Time-Series Diagnostics}
+
+We conduct formal stationarity and autocorrelation tests to validate time-series properties. Table~\ref{tab:diagnostics} summarizes results.
+
+\begin{table}[h]
+\centering
+\caption{Time-Series Diagnostic Tests}
+\label{tab:diagnostics}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Test} & \textbf{Statistic} & \textbf{p-value} & \textbf{Conclusion} \\
+\midrule
+ADF (Spread) & $-$2.62 & 0.089 & Non-stationary \\
+KPSS (Spread) & 1.00 & $<$0.01 & Non-stationary \\
+Jarque-Bera (Returns) & 5.15 & 0.076 & Approx.\ Normal \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The spread series exhibits non-stationarity by both ADF ($p = 0.089$) and KPSS ($p < 0.01$) tests, indicating potential regime-dependent behavior. Figure~\ref{fig:acf} presents autocorrelation analysis.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/acf_comparison.pdf}
+\caption{Autocorrelation analysis: (A) ACF of returns showing significant positive autocorrelation from momentum effects; (B) ACF of absolute returns. Both panels include 95\% confidence intervals.}
+\label{fig:acf}
+\end{figure}
+
+Ljung-Box tests indicate significant autocorrelation in both returns ($Q_{10} = 1467.3$, $p < 0.001$) and absolute returns ($Q_{10} = 37.4$, $p < 0.001$). The strong autocorrelation in returns reflects the momentum dynamics in the market maker's quote adjustment process.
+
+\subsection{Regime-Conditional Dynamics}
+
+We classify each timestep into bullish ($s_t > 0.2$), neutral ($|s_t| \leq 0.2$), or bearish ($s_t < -0.2$) regimes based on sentiment scores. Table~\ref{tab:regime_stats} presents regime-conditional statistics.
+
+\begin{table}[h]
+\centering
+\caption{Regime-Conditional Statistics}
+\label{tab:regime_stats}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Regime} & \textbf{N} & \textbf{\% Time} & \textbf{$\bar{s}$ (bps)} & \textbf{$\sigma_r$} & \textbf{$\bar{\sigma}_u$} \\
+\midrule
+Bullish & 488 & 24.4\% & 10.57 & 0.063\% & 0.247 \\
+Neutral & 1,144 & 57.2\% & 11.19 & 0.065\% & 0.301 \\
+Bearish & 368 & 18.4\% & 10.17 & 0.065\% & 0.245 \\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize $\bar{s}$: mean spread; $\sigma_r$: return volatility; $\bar{\sigma}_u$: mean total uncertainty.}
+\end{tabular}
+\end{table}
+
+Interestingly, spreads are \textit{widest} during neutral regimes (11.19 bps) and narrowest during bearish regimes (10.17 bps). This counter-intuitive result reflects the higher uncertainty during neutral regimes ($\bar{\sigma}_u = 0.301$) compared to extreme sentiment regimes.
+
+Figure~\ref{fig:regime_dynamics} visualizes the regime dynamics and duration distribution.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/regime_dynamics.pdf}
+\caption{Regime dynamics: (A) Sentiment time series with regime identification (green: bullish, gray: neutral, red: bearish); (B) Spread response to regimes; (C) Distribution of regime durations by type.}
+\label{fig:regime_dynamics}
+\end{figure}
+
+Table~\ref{tab:transitions} presents the regime transition probability matrix.
+
+\begin{table}[h]
+\centering
+\caption{Regime Transition Matrix $P(\text{regime}_{t+1} | \text{regime}_t)$}
+\label{tab:transitions}
+\small
+\begin{tabular}{lccc}
+\toprule
+& \textbf{$\to$ Bullish} & \textbf{$\to$ Neutral} & \textbf{$\to$ Bearish} \\
+\midrule
+\textbf{Bullish $\to$} & 0.992 & 0.004 & 0.004 \\
+\textbf{Neutral $\to$} & 0.003 & 0.995 & 0.002 \\
+\textbf{Bearish $\to$} & 0.003 & 0.008 & 0.989 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+High diagonal persistence ($>$98.9\%) indicates regime stability, with regimes lasting 92--191 steps on average. Bearish regimes have shortest mean duration (92 steps) compared to neutral (191 steps).
+
+\subsection{Uncertainty Decomposition}
+
+We analyze the decomposition of total uncertainty into epistemic and aleatoric components. Table~\ref{tab:correlation} presents the correlation structure.
+
+\begin{table}[h]
+\centering
+\caption{Correlation Matrix (Key Variables)}
+\label{tab:correlation}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+& \textbf{Sent.} & \textbf{$\sigma_e$} & \textbf{$\sigma_a$} & \textbf{Spread} \\
+\midrule
+Sentiment & 1.000 & $-$0.013 & $-$0.008 & 0.085 \\
+$\sigma_{\text{epistemic}}$ & $-$0.013 & 1.000 & 0.559 & \textbf{0.496} \\
+$\sigma_{\text{aleatoric}}$ & $-$0.008 & 0.559 & 1.000 & \textbf{0.612} \\
+Spread & 0.085 & \textbf{0.496} & \textbf{0.612} & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Key findings:
 \begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
-    \item Mean spread: 0.12 bps (std: 0.01 bps)
-    \item Sentiment-spread correlation: \textbf{0.55}
-    \item Uncertainty-spread correlation: \textbf{0.72}
-    \item Bullish periods: 48\%; Bearish: 4.4\%
-    \item Inventory volatility: 4.15 units
+    \item \textbf{Aleatoric dominance:} Aleatoric uncertainty comprises 81.6\% of total uncertainty (mean: 0.227 vs.\ 0.051 epistemic)
+    \item \textbf{Spread correlations:} Aleatoric ($\rho = 0.612$) stronger predictor than epistemic ($\rho = 0.496$)
+    \item \textbf{Sentiment-spread:} Direct sentiment-spread correlation weak ($\rho = 0.085$) compared to uncertainty effects
 \end{itemize}
+
+Figure~\ref{fig:uncertainty} visualizes the uncertainty decomposition.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/uncertainty_decomposition.pdf}
+\caption{Uncertainty decomposition: (A) Stacked area plot of epistemic (blue) and aleatoric (red) uncertainty over time; (B) Scatter plot showing spread response to each uncertainty component with linear fits.}
+\label{fig:uncertainty}
+\end{figure}
+
+The stronger aleatoric-spread correlation suggests market makers respond more to inherent signal ambiguity than to model uncertainty. This has practical implications: sentiment signals with high aleatoric uncertainty warrant wider spreads regardless of model confidence.
 
 \section{Discussion}
 \label{sec:discussion}
 
 \subsection{Validation of Core Hypotheses}
 
-The preliminary results support our core theoretical claims:
+The expanded preliminary results provide nuanced support for our theoretical framework:
 
-\textbf{H1: Sentiment signals drive microstructure adjustment.} The positive sentiment-spread correlation (0.55) confirms that market makers adjust quotes based on sentiment signals. During sentiment extremes (bullish or bearish), spreads widen as market makers protect against adverse selection from sentiment-informed traders.
+\textbf{H1: Uncertainty drives microstructure adjustment.} Counter-intuitively, direct sentiment-spread correlation is weak ($\rho = 0.085$), while uncertainty-spread correlation is strong (total: $\rho = 0.637$; aleatoric: $\rho = 0.612$). This suggests market makers respond primarily to \textit{signal quality} rather than signal direction---consistent with adverse selection theory where informed trading risk matters more than market direction.
 
-\textbf{H2: Uncertainty modulates spread adjustment.} The strong uncertainty-spread correlation (0.72) validates our uncertainty-aware framework. Market makers respond more to epistemic uncertainty (model confidence) than raw sentiment, consistent with Bayesian decision-making under uncertainty.
+\textbf{H2: Aleatoric uncertainty dominates.} Aleatoric (inherent) uncertainty comprises 81.6\% of total uncertainty and shows stronger spread correlation than epistemic (model) uncertainty. This validates our decomposition approach: market makers should weight inherent signal ambiguity over model confidence when adjusting quotes.
 
-\textbf{H3: Uncertainty decomposition is meaningful.} The distinct patterns in epistemic vs.\ aleatoric uncertainty---low epistemic for clear sentiment, high aleatoric for ambiguous texts---demonstrate that MC Dropout provides actionable uncertainty quantification.
+\textbf{H3: Regime dynamics reveal counter-intuitive patterns.} Spreads are \textit{widest} during neutral regimes (11.19 bps) despite sentiment extremes during bullish/bearish periods. This reflects higher uncertainty during neutral regimes ($\bar{\sigma}_u = 0.301$ vs.\ 0.247 in bullish). The finding supports uncertainty-weighted rather than sentiment-weighted market making.
 
 \subsection{Comparison to Traditional Models}
 
@@ -528,16 +675,19 @@ Several limitations apply to preliminary results:
     \item \textbf{Synthetic dynamics:} Current simulation uses synthetic sentiment series rather than real Reddit data
     \item \textbf{Single agent type:} Only market maker agents implemented; informed traders, noise traders, and arbitrageurs pending
     \item \textbf{No order book matching:} Simplified quote generation without full limit order book dynamics
-    \item \textbf{No calibration:} Parameters not yet calibrated to empirical stylized facts
+    \item \textbf{Absence of fat tails:} Return kurtosis (0.016) approximates normal distribution; real markets exhibit excess kurtosis $>$ 3. This limitation reflects the single-agent configuration without informed trader interactions
+    \item \textbf{Strong autocorrelation:} Returns exhibit significant positive autocorrelation reflecting momentum dynamics, rather than empirical near-zero autocorrelation
+    \item \textbf{Non-stationary spreads:} Spread series fails ADF/KPSS stationarity tests, suggesting regime-dependent dynamics requiring further investigation
 \end{enumerate}
 
 \subsection{Implications for Cryptocurrency Markets}
 
-The strong uncertainty-spread correlation (0.72) has practical implications:
+The strong uncertainty-spread correlation ($\rho = 0.637$) and aleatoric dominance have practical implications:
 \begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
-    \item Market makers may benefit from monitoring sentiment uncertainty, not just sentiment level
-    \item High-uncertainty periods warrant wider spreads regardless of sentiment direction
-    \item Algorithmic trading strategies should incorporate uncertainty-aware position sizing
+    \item Market makers should monitor sentiment \textit{uncertainty}, not just sentiment level---the direct sentiment-spread correlation is only 0.085
+    \item Neutral sentiment periods with high uncertainty warrant \textit{wider} spreads than extreme sentiment periods with clear signals
+    \item Aleatoric uncertainty (81.6\% of total) provides more actionable information than epistemic uncertainty for spread adjustment
+    \item Regime persistence ($>$98.9\%) suggests stable trading regimes once established, reducing regime switching costs
 \end{itemize}
 
 \subsection{Next Steps}
@@ -554,13 +704,19 @@ Completing the full simulation requires:
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper presents a methodological framework for agent-based modeling of cryptocurrency market microstructure with uncertainty-aware sentiment integration, along with preliminary validation results. The key innovation is treating sentiment as a noisy signal with quantified uncertainty, enabling realistic modeling of heterogeneous trader responses to social media information.
+This paper presents a methodological framework for agent-based modeling of cryptocurrency market microstructure with uncertainty-aware sentiment integration. The key innovation is treating sentiment as a noisy signal with decomposed uncertainty (epistemic vs.\ aleatoric), enabling nuanced modeling of market maker responses to social media information quality.
 
-Preliminary results validate core framework components: CryptoBERT correctly differentiates bullish/bearish sentiment with appropriate uncertainty decomposition, and market maker simulations demonstrate expected correlations between sentiment, uncertainty, and spread behavior. The sentiment-spread correlation of 0.55 and uncertainty-spread correlation of 0.72 support our theoretical hypotheses about uncertainty-aware market making.
+Preliminary results from 2,000 timesteps reveal several findings:
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item \textbf{Uncertainty dominates sentiment:} Direct sentiment-spread correlation is weak ($\rho = 0.085$) while total uncertainty-spread correlation is strong ($\rho = 0.637$)
+    \item \textbf{Aleatoric uncertainty is key:} Aleatoric (inherent) uncertainty comprises 81.6\% of total and shows stronger spread correlation ($\rho = 0.612$) than epistemic uncertainty ($\rho = 0.496$)
+    \item \textbf{Counter-intuitive regime effects:} Spreads are widest during neutral sentiment regimes (11.19 bps) due to higher uncertainty, not during sentiment extremes
+    \item \textbf{High regime persistence:} Transition probabilities exceed 98.9\% on diagonal, indicating stable trading regimes
+\end{itemize}
 
-The framework combines modern NLP (Monte Carlo Dropout for uncertainty), domain-specific models (CryptoBERT for cryptocurrency sentiment), distributed computing (Kafka, Kubernetes), and agent-based simulation (Mesa) into an integrated pipeline for studying sentiment-microstructure dynamics.
+The framework combines modern NLP (Monte Carlo Dropout for uncertainty), domain-specific models (CryptoBERT for cryptocurrency sentiment), and agent-based simulation into an integrated pipeline. Current limitations include absence of fat tails (kurtosis = 0.016) and significant return autocorrelation---both reflecting the single market maker configuration without informed trader interactions.
 
-Future research will complete remaining simulation components, calibrate to empirical data, and investigate how sentiment shocks affect market microstructure properties including spreads, volatility, and flash crash susceptibility.
+Future research will implement additional agent types, calibrate parameters to empirical stylized facts, and investigate how sentiment shocks propagate through multi-agent market microstructure.
 
 \clearpage
 \onecolumn

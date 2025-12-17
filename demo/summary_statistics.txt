@@ -1,15 +1,35 @@
 Sentiment-Microstructure ABM: Preliminary Results
-==================================================
+============================================================
 
 Summary Statistics:
-  n_observations: 500
-  mean_spread_bps: 0.11368696941001837
-  std_spread_bps: 0.006813198076688442
-  sentiment_spread_correlation: 0.5473762039241867
-  uncertainty_spread_correlation: 0.7216706057267617
-  bullish_periods_pct: 48.0
-  bearish_periods_pct: 4.3999999999999995
-  mean_spread_bullish: 0.11704465531555752
-  mean_spread_bearish: 0.11348547586112576
-  inventory_volatility: 4.145047507288107
-  max_inventory: 16.0
+  n_observations: 2000
+  mean_spread_bps: 0.108512
+  std_spread_bps: 0.006802
+  median_spread_bps: 0.109212
+  sentiment_spread_correlation: 0.084747
+  epistemic_spread_correlation: 0.495574
+  aleatoric_spread_correlation: 0.612284
+  total_uncertainty_spread_correlation: 0.636895
+  bullish_periods_pct: 24.400000
+  neutral_periods_pct: 57.200000
+  bearish_periods_pct: 18.400000
+  mean_spread_bullish: 0.105711
+  mean_spread_neutral: 0.111912
+  mean_spread_bearish: 0.101660
+  inventory_volatility: 7.429772
+  max_inventory: 24.000000
+  mean_inventory: -6.422000
+  return_mean: 0.000066
+  return_std: 0.000714
+  return_skewness: -0.124029
+  return_kurtosis: 0.015856
+  spread_skewness: -0.161331
+  spread_kurtosis: -0.354162
+  mean_epistemic: 0.050991
+  mean_aleatoric: 0.226837
+  epistemic_std: 0.010902
+  aleatoric_std: 0.037963
+  price_start: 100.018663
+  price_end: 114.064618
+  price_min: 99.045976
+  price_max: 123.314925

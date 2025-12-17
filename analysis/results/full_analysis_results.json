@@ -1,0 +1,306 @@
+{
+  "return_statistics": {
+    "n_obs": 1999,
+    "mean": 6.573702603326182e-05,
+    "std": 0.0007144604806345374,
+    "min": -0.0027761440549223,
+    "max": 0.0023249968120814,
+    "median": 7.631133467463071e-05,
+    "skewness": -0.12402933988892749,
+    "kurtosis": 0.015856399008901345,
+    "iqr": 0.00098266781878515,
+    "q01": -0.00169615531420644,
+    "q05": -0.00114340385288259,
+    "q95": 0.0012521943450000796,
+    "q99": 0.0016631459348331696
+  },
+  "jarque_bera": {
+    "statistic": 5.1461368113050465,
+    "p_value": 0.07630106325089935,
+    "is_normal": "True"
+  },
+  "adf_spread": {
+    "adf_statistic": -2.6177915149795536,
+    "p_value": 0.08937559198708434,
+    "used_lag": 8,
+    "n_obs": 1991,
+    "critical_values": {
+      "1%": -3.4336386745240652,
+      "5%": -2.8629927557359443,
+      "10%": -2.5675433856598793
+    },
+    "is_stationary": "False"
+  },
+  "kpss_spread": {
+    "kpss_statistic": 1.0047900500955873,
+    "p_value": 0.01,
+    "used_lags": 27,
+    "critical_values": {
+      "10%": 0.347,
+      "5%": 0.463,
+      "2.5%": 0.574,
+      "1%": 0.739
+    },
+    "is_stationary": "False"
+  },
+  "ljung_box_returns": {
+    "lag": {
+      "0": 5,
+      "1": 10,
+      "2": 20,
+      "3": 50
+    },
+    "lb_stat": {
+      "0": 807.047612734163,
+      "1": 1467.27630363875,
+      "2": 2426.1854894902517,
+      "3": 3755.4108706645957
+    },
+    "lb_pvalue": {
+      "0": 3.456356259688247e-172,
+      "1": 2.94500788101001e-309,
+      "2": 0.0,
+      "3": 0.0
+    },
+    "has_autocorr": {
+      "0": true,
+      "1": true,
+      "2": true,
+      "3": true
+    }
+  },
+  "ljung_box_abs_returns": {
+    "lag": {
+      "0": 5,
+      "1": 10,
+      "2": 20,
+      "3": 50
+    },
+    "lb_stat": {
+      "0": 23.73187530724697,
+      "1": 37.43835415206414,
+      "2": 57.09833693072001,
+      "3": 84.78008677455162
+    },
+    "lb_pvalue": {
+      "0": 0.00024444145682840174,
+      "1": 4.751493450171162e-05,
+      "2": 1.9832860426164453e-05,
+      "3": 0.0015480516779832303
+    },
+    "has_autocorr": {
+      "0": true,
+      "1": true,
+      "2": true,
+      "3": true
+    }
+  },
+  "volatility_clustering": {
+    "acf_returns_lag1": 0.31990781626375153,
+    "acf_returns_lag5": 0.2576403469095772,
+    "acf_returns_lag10": 0.21552850582676134,
+    "acf_abs_returns_lag1": 0.058598755622866774,
+    "acf_abs_returns_lag5": 0.0736933154957764,
+    "acf_abs_returns_lag10": -0.010543142610328807,
+    "acf_sq_returns_lag1": 0.062155634799196106,
+    "acf_sq_returns_lag5": 0.038913251752014356,
+    "acf_sq_returns_lag10": -0.012072088356056571,
+    "clustering_ratio_lag10": -0.048917624909957234,
+    "has_volatility_clustering": "False"
+  },
+  "regime_statistics": {
+    "n_obs": {
+      "bullish": 488,
+      "neutral": 1144,
+      "bearish": 368
+    },
+    "pct_time": {
+      "bullish": 24.4,
+      "neutral": 57.199999999999996,
+      "bearish": 18.4
+    },
+    "mean_spread_bps": {
+      "bullish": 0.10571088559854781,
+      "neutral": 0.11191175763280634,
+      "bearish": 0.10165994730787017
+    },
+    "std_spread_bps": {
+      "bullish": 0.006597133071324097,
+      "neutral": 0.004908183214213022,
+      "bearish": 0.005067313024084209
+    },
+    "median_spread_bps": {
+      "bullish": 0.10561608773183405,
+      "neutral": 0.11158973015306364,
+      "bearish": 0.10159330941188124
+    },
+    "mean_return": {
+      "bullish": 0.000485243872353267,
+      "neutral": 6.16721123178206e-05,
+      "bearish": -0.0004797183708885299
+    },
+    "volatility": {
+      "bullish": 0.0006255318899896146,
+      "neutral": 0.0006462429869826803,
+      "bearish": 0.0006538895760731571
+    },
+    "mean_sentiment": {
+      "bullish": 0.48599539946626436,
+      "neutral": 0.027618245494116758,
+      "bearish": -0.47355514855211567
+    },
+    "sentiment_std": {
+      "bullish": 0.21392754820258164,
+      "neutral": 0.23297285998507333,
+      "bearish": 0.28835758480860985
+    },
+    "mean_epistemic": {
+      "bullish": 0.0462338536187164,
+      "neutral": 0.05453024369481308,
+      "bearish": 0.04629552904842053
+    },
+    "mean_aleatoric": {
+      "bullish": 0.20100616891474196,
+      "neutral": 0.24674680148890493,
+      "bearish": 0.19919637755845362
+    },
+    "mean_total_uncertainty": {
+      "bullish": 0.2472400225334584,
+      "neutral": 0.30127704518371806,
+      "bearish": 0.24549190660687417
+    },
+    "mean_inventory": {
+      "bullish": -7.952868852459017,
+      "neutral": -3.9562937062937062,
+      "bearish": -12.057065217391305
+    },
+    "inventory_std": {
+      "bullish": 7.584150227190692,
+      "neutral": 5.730901538640726,
+      "bearish": 8.255425369981358
+    },
+    "max_abs_inventory": {
+      "bullish": 20.0,
+      "neutral": 17.0,
+      "bearish": 24.0
+    }
+  },
+  "regime_transitions": {
+    "bullish": {
+      "bullish": 0.9917864476386037,
+      "neutral": 0.0034965034965034965,
+      "bearish": 0.002717391304347826
+    },
+    "neutral": {
+      "bullish": 0.004106776180698152,
+      "neutral": 0.9947552447552448,
+      "bearish": 0.008152173913043478
+    },
+    "bearish": {
+      "bullish": 0.004106776180698152,
+      "neutral": 0.0017482517482517483,
+      "bearish": 0.9891304347826086
+    }
+  },
+  "regime_durations": {
+    "bullish": {
+      "n_episodes": 5,
+      "mean_duration": 97.6,
+      "std_duration": 125.25909148640669,
+      "min_duration": 11,
+      "max_duration": 344,
+      "median_duration": 31.0,
+      "total_time": 488
+    },
+    "neutral": {
+      "n_episodes": 6,
+      "mean_duration": 190.66666666666666,
+      "std_duration": 172.89367317002154,
+      "min_duration": 22,
+      "max_duration": 489,
+      "median_duration": 126.5,
+      "total_time": 1144
+    },
+    "bearish": {
+      "n_episodes": 4,
+      "mean_duration": 92.0,
+      "std_duration": 40.29267923581156,
+      "min_duration": 37,
+      "max_duration": 144,
+      "median_duration": 93.5,
+      "total_time": 368
+    }
+  },
+  "correlation_matrix": {
+    "sentiment": {
+      "sentiment": 1.0,
+      "epistemic_uncertainty": -0.013282211063394434,
+      "aleatoric_uncertainty": -0.007724482532313964,
+      "total_uncertainty": -0.009738972654659688,
+      "spread_bps": 0.08474731774875394,
+      "log_return": 0.5603312589905823,
+      "inventory": 0.06562539282056531
+    },
+    "epistemic_uncertainty": {
+      "sentiment": -0.013282211063394434,
+      "epistemic_uncertainty": 1.0,
+      "aleatoric_uncertainty": 0.559427411945168,
+      "total_uncertainty": 0.7145490154345516,
+      "spread_bps": 0.49557362810137306,
+      "log_return": -0.006271946062270662,
+      "inventory": 0.1296578386281182
+    },
+    "aleatoric_uncertainty": {
+      "sentiment": -0.007724482532313964,
+      "epistemic_uncertainty": 0.559427411945168,
+      "aleatoric_uncertainty": 1.0,
+      "total_uncertainty": 0.9796101792597832,
+      "spread_bps": 0.6122838335838848,
+      "log_return": 0.011555546250186963,
+      "inventory": 0.237936992236382
+    },
+    "total_uncertainty": {
+      "sentiment": -0.009738972654659688,
+      "epistemic_uncertainty": 0.7145490154345516,
+      "aleatoric_uncertainty": 0.9796101792597832,
+      "total_uncertainty": 1.0,
+      "spread_bps": 0.6368953091782827,
+      "log_return": 0.008232813502900655,
+      "inventory": 0.23224911792515007
+    },
+    "spread_bps": {
+      "sentiment": 0.08474731774875394,
+      "epistemic_uncertainty": 0.49557362810137306,
+      "aleatoric_uncertainty": 0.6122838335838848,
+      "total_uncertainty": 0.6368953091782827,
+      "spread_bps": 1.0,
+      "log_return": 0.035066742713430375,
+      "inventory": 0.7997439935639873
+    },
+    "log_return": {
+      "sentiment": 0.5603312589905823,
+      "epistemic_uncertainty": -0.006271946062270662,
+      "aleatoric_uncertainty": 0.011555546250186963,
+      "total_uncertainty": 0.008232813502900655,
+      "spread_bps": 0.035066742713430375,
+      "log_return": 1.0,
+      "inventory": 0.024389694520216235
+    },
+    "inventory": {
+      "sentiment": 0.06562539282056531,
+      "epistemic_uncertainty": 0.1296578386281182,
+      "aleatoric_uncertainty": 0.237936992236382,
+      "total_uncertainty": 0.23224911792515007,
+      "spread_bps": 0.7997439935639873,
+      "log_return": 0.024389694520216235,
+      "inventory": 1.0
+    }
+  },
+  "uncertainty_ratios": {
+    "epistemic_ratio": 0.1835337702336503,
+    "aleatoric_ratio": 0.8164662297663495,
+    "mean_epistemic": 0.050990737021309254,
+    "mean_aleatoric": 0.22683680913760612,
+    "mean_total": 0.2778275461589154
+  }
+}

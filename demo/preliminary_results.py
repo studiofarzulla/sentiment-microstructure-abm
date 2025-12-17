@@ -24,14 +24,19 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Try to import the actual sentiment analyzer
+# Note: Set USE_SYNTHETIC = True to skip model download and use synthetic data
+USE_SYNTHETIC = True  # For reproducible paper results
+
 try:
+    if USE_SYNTHETIC:
+        raise ImportError("Using synthetic mode")
     import torch
     from transformers import AutoTokenizer, AutoModelForSequenceClassification
     import torch.nn.functional as F
     REAL_ANALYZER = True
 except ImportError:
     REAL_ANALYZER = False
-    print("Note: Using synthetic sentiment data (transformers not loaded)")
+    print("Note: Using synthetic sentiment data (for reproducible paper results)")
 
 
 class CryptoBERTAnalyzer:
@@ -196,46 +201,72 @@ def real_sentiment_analysis(texts: List[str]) -> List[SentimentResult]:
     return results
 
 
-def simulate_market_maker(sentiment_series: np.ndarray,
-                          uncertainty_series: np.ndarray,
-                          base_spread: float = 0.001,
-                          sentiment_sensitivity: float = 0.5,
-                          uncertainty_sensitivity: float = 1.0) -> pd.DataFrame:
+def simulate_market_maker(
+    sentiment_series: np.ndarray,
+    epistemic_series: np.ndarray,
+    aleatoric_series: np.ndarray,
+    regime_series: np.ndarray,
+    base_spread: float = 0.001,
+    sentiment_sensitivity: float = 0.5,
+    epistemic_sensitivity: float = 1.5,
+    aleatoric_sensitivity: float = 0.5,
+    inventory_aversion: float = 0.0001,
+    seed: int = 42
+) -> pd.DataFrame:
     """
     Simulate market maker behavior responding to sentiment signals.
 
-    Based on Avellaneda-Stoikov style quoting with sentiment adjustment.
+    Based on Avellaneda-Stoikov style quoting with sentiment and uncertainty adjustment.
+    Spread widening depends more on epistemic (model) uncertainty than aleatoric (data) uncertainty.
 
     Returns DataFrame with:
     - mid_price: Simulated mid price
+    - log_return: Log return from previous step
     - bid: Market maker bid
     - ask: Market maker ask
     - spread: Bid-ask spread
+    - spread_bps: Spread in basis points
     - inventory: Market maker inventory
+    - regime: Current market regime
+    - epistemic_uncertainty: Model uncertainty
+    - aleatoric_uncertainty: Data uncertainty
+    - total_uncertainty: Sum of uncertainties
     """
+    np.random.seed(seed)
     n = len(sentiment_series)
 
     # Initialize
     mid_price = 100.0  # Arbitrary starting price
+    prev_price = mid_price
     inventory = 0.0
 
     records = []
 
     for t in range(n):
         sentiment = sentiment_series[t]
-        uncertainty = uncertainty_series[t]
+        epistemic = epistemic_series[t]
+        aleatoric = aleatoric_series[t]
+        regime = regime_series[t]
 
-        # 1. Adjust mid price based on sentiment (drift)
+        # 1. Adjust mid price based on sentiment (drift) + volatility
         # Positive sentiment -> price tends to rise
-        price_drift = sentiment * 0.001  # Small drift per step
-        mid_price *= (1 + price_drift)
+        # Add volatility component based on uncertainty
+        volatility = 0.0005 + epistemic * 0.002  # Base vol + uncertainty-driven vol
+        price_drift = sentiment * 0.001  # Sentiment drift
+        price_noise = np.random.normal(0, volatility)  # Random walk component
+        prev_price = mid_price
+        mid_price *= (1 + price_drift + price_noise)
+
+        # Calculate log return
+        log_return = np.log(mid_price / prev_price) if t > 0 else 0.0
 
         # 2. Calculate spread
-        # Base spread + uncertainty premium + inventory skew
-        uncertainty_premium = base_spread * uncertainty * uncertainty_sensitivity
-        inventory_skew = -0.0001 * inventory  # Mean reversion
+        # Base spread + epistemic premium (model uncertainty matters more) + aleatoric premium
+        epistemic_premium = base_spread * epistemic * epistemic_sensitivity
+        aleatoric_premium = base_spread * aleatoric * aleatoric_sensitivity
+        inventory_skew = -inventory_aversion * inventory  # Mean reversion
 
-        spread = base_spread + uncertainty_premium
+        spread = base_spread + epistemic_premium + aleatoric_premium
 
         # 3. Calculate quotes
         # Sentiment shifts the midpoint of quotes
@@ -259,33 +290,52 @@ def simulate_market_maker(sentiment_series: np.ndarray,
         records.append({
             'step': t,
             'sentiment': sentiment,
-            'uncertainty': uncertainty,
+            'epistemic_uncertainty': epistemic,
+            'aleatoric_uncertainty': aleatoric,
+            'total_uncertainty': epistemic + aleatoric,
             'mid_price': mid_price,
+            'log_return': log_return,
             'bid': bid,
             'ask': ask,
             'spread': ask - bid,
             'spread_bps': (ask - bid) / mid_price * 10000,
-            'inventory': inventory
+            'inventory': inventory,
+            'regime': regime
         })
 
     return pd.DataFrame(records)
 
 
-def generate_sentiment_time_series(n_steps: int = 500,
-                                   regime_change_prob: float = 0.01) -> Tuple[np.ndarray, np.ndarray]:
+def generate_sentiment_time_series(
+    n_steps: int = 2000,
+    regime_change_prob: float = 0.01,
+    seed: int = 42
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Generate synthetic sentiment time series with regime changes.
 
-    Returns (sentiment_series, uncertainty_series)
+    Returns:
+        sentiment: (n_steps,) sentiment scores in [-1, 1]
+        epistemic_uncertainty: (n_steps,) model uncertainty (variance across MC samples)
+        aleatoric_uncertainty: (n_steps,) data uncertainty (entropy of predictions)
+        total_uncertainty: (n_steps,) epistemic + aleatoric
+        regime_labels: (n_steps,) regime strings ('bullish', 'neutral', 'bearish')
     """
-    sentiment = np.zeros(n_steps)
-    uncertainty = np.zeros(n_steps)
+    np.random.seed(seed)
 
-    # Start with neutral sentiment, moderate uncertainty
+    sentiment = np.zeros(n_steps)
+    epistemic_uncertainty = np.zeros(n_steps)
+    aleatoric_uncertainty = np.zeros(n_steps)
+    regime_labels = np.empty(n_steps, dtype=object)
+
+    # Start with neutral sentiment
     current_sentiment = 0.0
     current_regime = 'neutral'  # 'bullish', 'bearish', 'neutral'
+    prev_regime = 'neutral'
 
     for t in range(n_steps):
+        prev_regime = current_regime
+
         # Regime change
         if np.random.random() < regime_change_prob:
             current_regime = np.random.choice(['bullish', 'bearish', 'neutral'])
@@ -302,15 +352,29 @@ def generate_sentiment_time_series(n_steps: int = 500,
         current_sentiment = 0.9 * current_sentiment + 0.1 * target + np.random.normal(0, 0.1)
         current_sentiment = np.clip(current_sentiment, -1, 1)
 
-        # Uncertainty increases during regime transitions and extreme sentiment
-        base_uncertainty = 0.15
-        sentiment_uncertainty = abs(current_sentiment) * 0.1
-        noise = np.random.uniform(0, 0.1)
+        # Epistemic uncertainty: model confidence
+        # Higher during regime transitions, lower when sentiment is extreme (model is confident)
+        regime_transition = 1.0 if prev_regime != current_regime else 0.0
+        base_epistemic = 0.02
+        transition_epistemic = regime_transition * 0.08
+        sentiment_epistemic = (1.0 - abs(current_sentiment)) * 0.03  # Less confident near neutral
+        epistemic = base_epistemic + transition_epistemic + sentiment_epistemic + np.random.uniform(0, 0.02)
+
+        # Aleatoric uncertainty: inherent data noise
+        # Higher for ambiguous/neutral sentiment, lower for extreme sentiment
+        base_aleatoric = 0.10
+        sentiment_aleatoric = (1.0 - abs(current_sentiment)) * 0.15  # More uncertain near neutral
+        noise_aleatoric = np.random.uniform(0, 0.05)
+        aleatoric = base_aleatoric + sentiment_aleatoric + noise_aleatoric
 
         sentiment[t] = current_sentiment
-        uncertainty[t] = base_uncertainty + sentiment_uncertainty + noise
+        epistemic_uncertainty[t] = epistemic
+        aleatoric_uncertainty[t] = aleatoric
+        regime_labels[t] = current_regime
 
-    return sentiment, uncertainty
+    total_uncertainty = epistemic_uncertainty + aleatoric_uncertainty
+
+    return sentiment, epistemic_uncertainty, aleatoric_uncertainty, total_uncertainty, regime_labels
 
 
 def plot_preliminary_results(sentiment_results: List[SentimentResult],
@@ -366,8 +430,8 @@ def plot_preliminary_results(sentiment_results: List[SentimentResult],
     ax3_twin = ax3.twinx()
     ax3_twin.plot(mm_df['step'], mm_df['sentiment'], color='#e74c3c', alpha=0.5, label='Sentiment')
     ax3_twin.fill_between(mm_df['step'],
-                          mm_df['sentiment'] - mm_df['uncertainty'],
-                          mm_df['sentiment'] + mm_df['uncertainty'],
+                          mm_df['sentiment'] - mm_df['total_uncertainty'],
+                          mm_df['sentiment'] + mm_df['total_uncertainty'],
                           color='#e74c3c', alpha=0.1)
 
     ax3.set_xlabel('Time Step')
@@ -404,31 +468,76 @@ def plot_preliminary_results(sentiment_results: List[SentimentResult],
 
 
 def compute_statistics(mm_df: pd.DataFrame) -> dict:
-    """Compute summary statistics for supervisor presentation."""
+    """Compute comprehensive summary statistics."""
+    from scipy import stats as scipy_stats
 
-    # Correlation between sentiment and spread
+    # Correlations
     sentiment_spread_corr = mm_df['sentiment'].corr(mm_df['spread_bps'])
-    uncertainty_spread_corr = mm_df['uncertainty'].corr(mm_df['spread_bps'])
+    epistemic_spread_corr = mm_df['epistemic_uncertainty'].corr(mm_df['spread_bps'])
+    aleatoric_spread_corr = mm_df['aleatoric_uncertainty'].corr(mm_df['spread_bps'])
+    total_uncertainty_spread_corr = mm_df['total_uncertainty'].corr(mm_df['spread_bps'])
 
-    # Regime analysis
-    bullish_mask = mm_df['sentiment'] > 0.2
-    bearish_mask = mm_df['sentiment'] < -0.2
+    # Regime analysis using the regime column
+    bullish_mask = mm_df['regime'] == 'bullish'
+    bearish_mask = mm_df['regime'] == 'bearish'
+    neutral_mask = mm_df['regime'] == 'neutral'
 
-    stats = {
+    # Return statistics (skip first observation which has 0 return)
+    returns = mm_df['log_return'].iloc[1:]
+    abs_returns = returns.abs()
+
+    result = {
+        # Basic stats
         'n_observations': len(mm_df),
         'mean_spread_bps': mm_df['spread_bps'].mean(),
         'std_spread_bps': mm_df['spread_bps'].std(),
+        'median_spread_bps': mm_df['spread_bps'].median(),
+
+        # Correlations
         'sentiment_spread_correlation': sentiment_spread_corr,
-        'uncertainty_spread_correlation': uncertainty_spread_corr,
+        'epistemic_spread_correlation': epistemic_spread_corr,
+        'aleatoric_spread_correlation': aleatoric_spread_corr,
+        'total_uncertainty_spread_correlation': total_uncertainty_spread_corr,
+
+        # Regime breakdown
         'bullish_periods_pct': bullish_mask.mean() * 100,
+        'neutral_periods_pct': neutral_mask.mean() * 100,
         'bearish_periods_pct': bearish_mask.mean() * 100,
+
+        # Regime-conditional spreads
         'mean_spread_bullish': mm_df.loc[bullish_mask, 'spread_bps'].mean() if bullish_mask.any() else np.nan,
+        'mean_spread_neutral': mm_df.loc[neutral_mask, 'spread_bps'].mean() if neutral_mask.any() else np.nan,
         'mean_spread_bearish': mm_df.loc[bearish_mask, 'spread_bps'].mean() if bearish_mask.any() else np.nan,
+
+        # Inventory stats
         'inventory_volatility': mm_df['inventory'].std(),
         'max_inventory': mm_df['inventory'].abs().max(),
+        'mean_inventory': mm_df['inventory'].mean(),
+
+        # Return distribution
+        'return_mean': returns.mean(),
+        'return_std': returns.std(),
+        'return_skewness': scipy_stats.skew(returns),
+        'return_kurtosis': scipy_stats.kurtosis(returns),  # Excess kurtosis
+
+        # Spread distribution
+        'spread_skewness': scipy_stats.skew(mm_df['spread_bps']),
+        'spread_kurtosis': scipy_stats.kurtosis(mm_df['spread_bps']),
+
+        # Uncertainty stats
+        'mean_epistemic': mm_df['epistemic_uncertainty'].mean(),
+        'mean_aleatoric': mm_df['aleatoric_uncertainty'].mean(),
+        'epistemic_std': mm_df['epistemic_uncertainty'].std(),
+        'aleatoric_std': mm_df['aleatoric_uncertainty'].std(),
+
+        # Price stats
+        'price_start': mm_df['mid_price'].iloc[0],
+        'price_end': mm_df['mid_price'].iloc[-1],
+        'price_min': mm_df['mid_price'].min(),
+        'price_max': mm_df['mid_price'].max(),
     }
 
-    return stats
+    return result
 
 
 def main():
@@ -459,8 +568,11 @@ def main():
 
     # 2. Market Maker Simulation
     print("2. Simulating market maker response to sentiment...")
-    sentiment_series, uncertainty_series = generate_sentiment_time_series(n_steps=500)
-    mm_df = simulate_market_maker(sentiment_series, uncertainty_series)
+    sentiment_series, epistemic_series, aleatoric_series, total_uncertainty, regime_series = \
+        generate_sentiment_time_series(n_steps=2000, seed=42)
+    mm_df = simulate_market_maker(
+        sentiment_series, epistemic_series, aleatoric_series, regime_series, seed=42
+    )
     print(f"   Generated {len(mm_df)} time steps of market maker behavior")
     print()
 
@@ -468,16 +580,33 @@ def main():
     print("3. Computing summary statistics...")
     stats = compute_statistics(mm_df)
     print("\n   Summary Statistics:")
-    print("-" * 50)
+    print("-" * 60)
     print(f"   Observations:                    {stats['n_observations']}")
-    print(f"   Mean Spread (bps):               {stats['mean_spread_bps']:.2f}")
-    print(f"   Std Spread (bps):                {stats['std_spread_bps']:.2f}")
-    print(f"   Sentiment-Spread Correlation:    {stats['sentiment_spread_correlation']:.3f}")
-    print(f"   Uncertainty-Spread Correlation:  {stats['uncertainty_spread_correlation']:.3f}")
+    print(f"   Mean Spread (bps):               {stats['mean_spread_bps']:.4f}")
+    print(f"   Std Spread (bps):                {stats['std_spread_bps']:.4f}")
+    print()
+    print("   Correlations:")
+    print(f"   Sentiment-Spread:                {stats['sentiment_spread_correlation']:.3f}")
+    print(f"   Epistemic-Spread:                {stats['epistemic_spread_correlation']:.3f}")
+    print(f"   Aleatoric-Spread:                {stats['aleatoric_spread_correlation']:.3f}")
+    print(f"   Total Uncertainty-Spread:        {stats['total_uncertainty_spread_correlation']:.3f}")
+    print()
+    print("   Regime Breakdown:")
     print(f"   Bullish Periods (%):             {stats['bullish_periods_pct']:.1f}%")
+    print(f"   Neutral Periods (%):             {stats['neutral_periods_pct']:.1f}%")
     print(f"   Bearish Periods (%):             {stats['bearish_periods_pct']:.1f}%")
-    print(f"   Mean Spread (Bullish):           {stats['mean_spread_bullish']:.2f} bps")
-    print(f"   Mean Spread (Bearish):           {stats['mean_spread_bearish']:.2f} bps")
+    print()
+    print("   Regime-Conditional Spreads:")
+    print(f"   Mean Spread (Bullish):           {stats['mean_spread_bullish']:.4f} bps")
+    print(f"   Mean Spread (Neutral):           {stats['mean_spread_neutral']:.4f} bps")
+    print(f"   Mean Spread (Bearish):           {stats['mean_spread_bearish']:.4f} bps")
+    print()
+    print("   Return Distribution:")
+    print(f"   Mean Return:                     {stats['return_mean']:.6f}")
+    print(f"   Std Return:                      {stats['return_std']:.6f}")
+    print(f"   Skewness:                        {stats['return_skewness']:.3f}")
+    print(f"   Excess Kurtosis:                 {stats['return_kurtosis']:.3f}")
+    print()
     print(f"   Inventory Volatility:            {stats['inventory_volatility']:.2f}")
     print()
 
@@ -498,11 +627,21 @@ def main():
     stats_path = os.path.join(output_dir, 'summary_statistics.txt')
     with open(stats_path, 'w') as f:
         f.write("Sentiment-Microstructure ABM: Preliminary Results\n")
-        f.write("=" * 50 + "\n\n")
+        f.write("=" * 60 + "\n\n")
         f.write("Summary Statistics:\n")
         for k, v in stats.items():
-            f.write(f"  {k}: {v}\n")
+            if isinstance(v, float):
+                f.write(f"  {k}: {v:.6f}\n")
+            else:
+                f.write(f"  {k}: {v}\n")
     print(f"   Saved statistics to: {stats_path}")
+
+    # 6. Save stats as JSON for LaTeX import
+    import json
+    json_path = os.path.join(output_dir, 'summary_statistics.json')
+    with open(json_path, 'w') as f:
+        json.dump(stats, f, indent=2)
+    print(f"   Saved statistics JSON to: {json_path}")
 
     print()
     print("=" * 60)
@@ -513,6 +652,7 @@ def main():
     print("  - preliminary_results.png (figure)")
     print("  - preliminary_results.csv (simulation data)")
     print("  - summary_statistics.txt (statistics)")
+    print("  - summary_statistics.json (statistics for LaTeX)")
 
     return stats, mm_df, sentiment_results
 
