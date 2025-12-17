@@ -529,14 +529,14 @@ We conduct formal stationarity and autocorrelation tests to validate time-series
 \centering
 \caption{Time-Series Diagnostic Tests}
 \label{tab:diagnostics}
-\small
-\begin{tabular}{lccc}
+\footnotesize
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Test} & \textbf{Statistic} & \textbf{p-value} & \textbf{Conclusion} \\
+\textbf{Test} & \textbf{Stat.} & \textbf{p} & \textbf{Result} \\
 \midrule
-ADF (Spread) & $-$2.62 & 0.089 & Non-stationary \\
-KPSS (Spread) & 1.00 & $<$0.01 & Non-stationary \\
-Jarque-Bera (Returns) & 5.15 & 0.076 & Approx.\ Normal \\
+ADF (Spread) & $-$2.62 & .089 & Non-stat. \\
+KPSS (Spread) & 1.00 & $<$.01 & Non-stat. \\
+Jarque-Bera & 5.15 & .076 & $\approx$Normal \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -560,17 +560,19 @@ We classify each timestep into bullish ($s_t > 0.2$), neutral ($|s_t| \leq 0.2$)
 \centering
 \caption{Regime-Conditional Statistics}
 \label{tab:regime_stats}
-\small
-\begin{tabular}{lrrrrr}
+\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
-\textbf{Regime} & \textbf{N} & \textbf{\% Time} & \textbf{$\bar{s}$ (bps)} & \textbf{$\sigma_r$} & \textbf{$\bar{\sigma}_u$} \\
+\textbf{Regime} & \textbf{N (\%)} & \textbf{Spread} & \textbf{$\sigma_r$} & \textbf{$\sigma_u$} \\
 \midrule
-Bullish & 488 & 24.4\% & 10.57 & 0.063\% & 0.247 \\
-Neutral & 1,144 & 57.2\% & 11.19 & 0.065\% & 0.301 \\
-Bearish & 368 & 18.4\% & 10.17 & 0.065\% & 0.245 \\
+Bullish & 488 (24.4) & 10.57 & 0.063 & 0.247 \\
+Neutral & 1,144 (57.2) & 11.19 & 0.065 & 0.301 \\
+Bearish & 368 (18.4) & 10.17 & 0.065 & 0.245 \\
 \bottomrule
-\multicolumn{6}{l}{\footnotesize $\bar{s}$: mean spread; $\sigma_r$: return volatility; $\bar{\sigma}_u$: mean total uncertainty.}
 \end{tabular}
+\vspace{0.5em}
+\newline
+{\scriptsize Spread in bps; $\sigma_r$: return vol (\%); $\sigma_u$: total uncertainty.}
 \end{table}
 
 Interestingly, spreads are \textit{widest} during neutral regimes (11.19 bps) and narrowest during bearish regimes (10.17 bps). This counter-intuitive result reflects the higher uncertainty during neutral regimes ($\bar{\sigma}_u = 0.301$) compared to extreme sentiment regimes.
@@ -588,18 +590,21 @@ Table~\ref{tab:transitions} presents the regime transition probability matrix.
 
 \begin{table}[h]
 \centering
-\caption{Regime Transition Matrix $P(\text{regime}_{t+1} | \text{regime}_t)$}
+\caption{Regime Transition Matrix}
 \label{tab:transitions}
-\small
-\begin{tabular}{lccc}
+\footnotesize
+\begin{tabular}{@{}lccc@{}}
 \toprule
-& \textbf{$\to$ Bullish} & \textbf{$\to$ Neutral} & \textbf{$\to$ Bearish} \\
+& \textbf{Bull.} & \textbf{Neut.} & \textbf{Bear.} \\
 \midrule
-\textbf{Bullish $\to$} & 0.992 & 0.004 & 0.004 \\
-\textbf{Neutral $\to$} & 0.003 & 0.995 & 0.002 \\
-\textbf{Bearish $\to$} & 0.003 & 0.008 & 0.989 \\
+\textbf{Bullish} & 0.992 & 0.004 & 0.004 \\
+\textbf{Neutral} & 0.003 & 0.995 & 0.002 \\
+\textbf{Bearish} & 0.003 & 0.008 & 0.989 \\
 \bottomrule
 \end{tabular}
+\vspace{0.3em}
+\newline
+{\scriptsize $P(\text{regime}_{t+1} | \text{regime}_t)$}
 \end{table}
 
 High diagonal persistence ($>$98.9\%) indicates regime stability, with regimes lasting 92--191 steps on average. Bearish regimes have shortest mean duration (92 steps) compared to neutral (191 steps).
@@ -610,17 +615,17 @@ We analyze the decomposition of total uncertainty into epistemic and aleatoric c
 
 \begin{table}[h]
 \centering
-\caption{Correlation Matrix (Key Variables)}
+\caption{Correlation Matrix}
 \label{tab:correlation}
-\small
-\begin{tabular}{lrrrr}
+\footnotesize
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-& \textbf{Sent.} & \textbf{$\sigma_e$} & \textbf{$\sigma_a$} & \textbf{Spread} \\
+& Sent. & $\sigma_e$ & $\sigma_a$ & Sprd. \\
 \midrule
-Sentiment & 1.000 & $-$0.013 & $-$0.008 & 0.085 \\
-$\sigma_{\text{epistemic}}$ & $-$0.013 & 1.000 & 0.559 & \textbf{0.496} \\
-$\sigma_{\text{aleatoric}}$ & $-$0.008 & 0.559 & 1.000 & \textbf{0.612} \\
-Spread & 0.085 & \textbf{0.496} & \textbf{0.612} & 1.000 \\
+Sentiment & 1.00 & $-$.01 & $-$.01 & .09 \\
+$\sigma_{\text{epist.}}$ & & 1.00 & .56 & \textbf{.50} \\
+$\sigma_{\text{aleat.}}$ & & & 1.00 & \textbf{.61} \\
+Spread & & & & 1.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
