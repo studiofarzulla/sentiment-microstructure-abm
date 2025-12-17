@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: article
+authors:
+  - family-names: "Farzulla"
+    given-names: "Murad"
+    orcid: "https://orcid.org/0009-0002-7164-8704"
+    email: "murad@farzulla.org"
+    affiliation: "Farzulla Research"
+title: "Sentiment-Driven Market Microstructure: An Agent-Based Modeling Framework for Cryptocurrency Markets"
+abstract: "This paper presents a methodological framework for agent-based modeling (ABM) of cryptocurrency market microstructure with real-time sentiment integration. The proposed architecture combines three novel components: (1) a Monte Carlo Dropout sentiment analyzer providing uncertainty-aware sentiment scores from social media streams, (2) a heterogeneous agent population including market makers, informed traders, noise traders, and arbitrageurs with sentiment-responsive behavior rules, and (3) a dynamic factor model (DFM) for regime detection enabling adaptive agent parameterization."
+keywords:
+  - agent-based modeling
+  - market microstructure
+  - sentiment analysis
+  - Monte Carlo dropout
+  - cryptocurrency
+  - uncertainty quantification
+  - Kafka
+  - heterogeneous agents
+version: "1.0.0"
+date-released: "2025-12-17"
+license: "CC-BY-4.0"
+doi: "10.5281/zenodo.17957746"
+repository-code: "https://github.com/studiofarzulla/sentiment-microstructure-abm"
+url: "https://farzulla.org"

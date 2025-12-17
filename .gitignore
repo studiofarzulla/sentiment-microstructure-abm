@@ -71,3 +71,7 @@ Thumbs.db
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Claude Flow / Swarm orchestration
+.claude-flow/
+.swarm/

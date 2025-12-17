@@ -213,14 +213,14 @@ LOG_LEVEL=DEBUG
 Now that you have configuration working:
 
 1. **Migrate existing code:** See [MIGRATION.md](MIGRATION.md)
-2. **Understand validation:** See [README.md](README.md)
+2. **Understand validation:** See [README.md](zArchive/README.md)
 3. **Explore architecture:** See [ARCHITECTURE.md](ARCHITECTURE.md)
 4. **Review all options:** See [.env.example](.env.example)
 
 ## Getting Help
 
 - **Error messages:** They're designed to be helpful! Read them carefully.
-- **Documentation:** [README.md](README.md) has complete docs for every config option
+- **Documentation:** [README.md](zArchive/README.md) has complete docs for every config option
 - **Examples:** [MIGRATION.md](MIGRATION.md) shows before/after patterns
 - **Test config:** `python -m config.settings` validates without running the app
 

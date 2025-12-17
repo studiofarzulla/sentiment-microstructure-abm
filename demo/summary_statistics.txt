@@ -1,0 +1,15 @@
+Sentiment-Microstructure ABM: Preliminary Results
+==================================================
+
+Summary Statistics:
+  n_observations: 500
+  mean_spread_bps: 0.11368696941001837
+  std_spread_bps: 0.006813198076688442
+  sentiment_spread_correlation: 0.5473762039241867
+  uncertainty_spread_correlation: 0.7216706057267617
+  bullish_periods_pct: 48.0
+  bearish_periods_pct: 4.3999999999999995
+  mean_spread_bullish: 0.11704465531555752
+  mean_spread_bearish: 0.11348547586112576
+  inventory_volatility: 4.145047507288107
+  max_inventory: 16.0

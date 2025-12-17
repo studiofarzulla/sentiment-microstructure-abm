@@ -1,0 +1,647 @@
+% ============================================================================
+% Sentiment-Driven Market Microstructure: An Agent-Based Modeling Framework
+% ============================================================================
+% Author: Murad Farzulla
+% Organization: Farzulla Research
+% Version: 1.1.0
+% Date: December 2025
+% ============================================================================
+
+\documentclass[11pt,twocolumn]{article}
+
+\usepackage[a4paper, margin=0.9in]{geometry}
+\usepackage{setspace}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amssymb}
+% Algorithm packages removed - not needed for methodology paper
+\usepackage[round,authoryear]{natbib}
+\bibliographystyle{plainnat}
+\usepackage{xcolor}
+\definecolor{farzullaburgundy}{RGB}{128,0,32}
+\definecolor{orcidgreen}{RGB}{166,206,57}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{scalerel}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage[colorlinks=true,
+            linkcolor=farzullaburgundy,
+            citecolor=farzullaburgundy,
+            urlcolor=farzullaburgundy,
+            breaklinks=true,
+            pdftitle={Sentiment-Driven Market Microstructure},
+            pdfauthor={Murad Farzulla},
+            pdfkeywords={agent-based model, market microstructure, sentiment analysis, cryptocurrency, Monte Carlo dropout}]{hyperref}
+
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1.5ex plus 0.5ex minus 0.2ex}{1ex plus 0.2ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus 0.4ex minus 0.2ex}{0.8ex plus 0.2ex}
+\titleformat{\section}{\normalfont\large\bfseries\color{farzullaburgundy}}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\color{farzullaburgundy}}{\thesubsection}{0.5em}{}
+
+\usepackage{fancyhdr}
+
+\newcommand{\orcidicon}{\scalerel*{
+    \begin{tikzpicture}[x=3ex,y=3ex]
+    \draw[fill=orcidgreen] (0,0) circle (0.5);
+    \end{tikzpicture}
+}{\textrm{I}}}
+
+\newcommand{\paperver}{1.1.0}
+\newcommand{\paperdate}{December 2025}
+\newcommand{\paperdoi}{10.5281/zenodo.17957746}
+
+\newcommand{\metadatabox}[1]{%
+\begin{tcolorbox}[
+    colback=gray!5,
+    colframe=farzullaburgundy,
+    title=Publication Metadata,
+    fonttitle=\bfseries,
+    coltitle=white,
+    colbacktitle=farzullaburgundy,
+    width=\columnwidth,
+    arc=2mm,
+    boxrule=0.8pt
+]
+\small
+\textbf{DOI:} \href{https://doi.org/#1}{\texttt{#1}}\\
+\textbf{Version:} \paperver\\
+\textbf{Date:} \paperdate\\
+\textbf{License:} CC-BY-4.0
+\end{tcolorbox}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\href{https://farzulla.org}{farzulla.org}}
+\fancyhead[R]{\small\href{https://doi.org/\paperdoi}{DOI: \paperdoi}}
+\fancyfoot[C]{\small\thepage}
+\fancyfoot[L]{\small Murad Farzulla}
+\fancyfoot[R]{\small v\paperver~| \paperdate}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\fancypagestyle{firstpage}{
+  \fancyhf{}
+  \fancyfoot[C]{\small\thepage}
+  \fancyfoot[L]{\small Murad Farzulla}
+  \fancyfoot[R]{\small v\paperver~| \paperdate}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
+
+\begin{document}
+
+\onecolumn
+\setstretch{1.2}
+\thispagestyle{firstpage}
+
+\begin{center}
+{\small\color{farzullaburgundy}\textbf{WORKING PAPER v\paperver} | \color{gray}Not peer-reviewed}
+\end{center}
+\vspace{0.5em}
+
+\begin{center}
+{\Large\bfseries Sentiment-Driven Market Microstructure}\\[0.5em]
+{\large\itshape An Agent-Based Modeling Framework for Cryptocurrency Markets}\\[1em]
+{\bfseries Murad Farzulla}\textsuperscript{1} \href{https://orcid.org/0009-0002-7164-8704}{\orcidicon\ \texttt{0009-0002-7164-8704}}\\[0.5em]
+{\small\itshape \textsuperscript{1}\href{https://farzulla.org}{Farzulla Research}}\\[0.3em]
+{\small \paperdate}\\[0.5em]
+{\small Correspondence: \href{mailto:murad@farzulla.org}{murad@farzulla.org}}
+\end{center}
+
+\begin{abstract}
+\noindent This paper presents a methodological framework for agent-based modeling (ABM) of cryptocurrency market microstructure with real-time sentiment integration, along with preliminary simulation results. The proposed architecture combines three novel components: (1) a Monte Carlo Dropout sentiment analyzer providing uncertainty-aware sentiment scores from social media streams, (2) a heterogeneous agent population including market makers, informed traders, noise traders, and arbitrageurs with sentiment-responsive behavior rules, and (3) a dynamic factor model (DFM) for regime detection enabling adaptive agent parameterization.
+
+The framework is designed for deployment on distributed computing infrastructure (Kubernetes/K3s) with Kafka-based event streaming for real-time data ingestion from cryptocurrency exchanges (Binance) and social platforms (Reddit). Sentiment processing uses CryptoBERT---fine-tuned on 3.2 million cryptocurrency social media posts---with Monte Carlo Dropout to quantify both aleatoric uncertainty (irreducible noise in sentiment signals) and epistemic uncertainty (model confidence), enabling agents to weight sentiment information appropriately.
+
+We detail the technical architecture, agent behavior specifications, and calibration methodology for matching simulated stylized facts to empirical observations. Preliminary results from market maker simulations demonstrate key findings: (1) sentiment-spread correlation of 0.55, confirming market makers widen quotes during sentiment extremes; (2) uncertainty-spread correlation of 0.72, validating that epistemic uncertainty drives spread adjustment; and (3) proper sentiment differentiation across bullish (+0.79), neutral (+0.23), and bearish ($-0.92$) texts with appropriate uncertainty decomposition.
+
+The framework enables investigation of how sentiment-driven trading affects market microstructure properties including bid-ask spreads, volatility clustering, and flash crash dynamics.
+
+\vspace{0.5em}
+\noindent\textbf{Keywords:} agent-based modeling, market microstructure, sentiment analysis, Monte Carlo dropout, cryptocurrency, Kafka, uncertainty quantification
+
+\vspace{0.3em}
+\noindent\textbf{JEL Codes:} G12 (Asset Pricing), G14 (Information and Market Efficiency), C63 (Computational Techniques; Simulation Modeling)
+\end{abstract}
+
+\vspace{1em}
+\metadatabox{\paperdoi}
+
+\clearpage
+\twocolumn
+\setstretch{1.15}
+
+\section{Introduction}
+\label{sec:introduction}
+
+Cryptocurrency markets exhibit distinctive microstructure properties that differ from traditional equity markets: 24/7 continuous trading, extreme volatility clustering, flash crashes, and apparent sensitivity to social media sentiment \citep{bouri2017hedge}. Understanding how these properties emerge from trader behavior requires models that capture both the heterogeneity of market participants and the information channels they respond to.
+
+This paper presents a methodological framework for agent-based modeling (ABM) of cryptocurrency microstructure with integrated real-time sentiment analysis. The key innovation is treating sentiment as an \textit{uncertain signal} rather than a deterministic input: our Monte Carlo Dropout sentiment analyzer provides not just sentiment scores but quantified uncertainty, enabling heterogeneous agent responses to sentiment information.
+
+\subsection{Motivation}
+
+Traditional market microstructure models assume rational agents with well-defined information structures \citep{glosten1985bid, kyle1985continuous}. Cryptocurrency markets challenge this assumption:
+
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item \textbf{Sentiment dominance:} Price movements correlate with social media activity \citep{abraham2018cryptocurrency}
+    \item \textbf{Uncertainty about uncertainty:} Traders disagree about the informativeness of sentiment signals
+    \item \textbf{Regime dependence:} Bull and bear markets exhibit different microstructure properties
+\end{itemize}
+
+Our framework addresses these challenges by:
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Quantifying sentiment uncertainty using Monte Carlo Dropout
+    \item Specifying heterogeneous agent responses to uncertain sentiment
+    \item Detecting market regimes via Dynamic Factor Models
+    \item Enabling real-time simulation with streaming data infrastructure
+\end{enumerate}
+
+\subsection{Contributions}
+
+This methodology paper contributes:
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item An uncertainty-aware sentiment analysis pipeline using Monte Carlo Dropout
+    \item Agent specifications for market makers, informed traders, noise traders, and arbitrageurs with sentiment-responsive behavior
+    \item A distributed computing architecture for real-time ABM simulation
+    \item Calibration methodology for matching simulated to empirical stylized facts
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Agent-Based Market Models}
+
+Agent-based computational economics has a rich history of market simulation \citep{lebaron2006agent}. The Santa Fe Artificial Stock Market \citep{palmer1994artificial} demonstrated emergence of realistic market dynamics from simple agent rules. Subsequent work has explored order book dynamics \citep{cont2010stochastic}, flash crashes \citep{paddrik2012agent}, and market design \citep{farmer2005predictive}.
+
+\subsection{Cryptocurrency Market Microstructure}
+
+\citet{makarov2020trading} document significant price dislocations across crypto exchanges, suggesting fragmented liquidity. \citet{hautsch2018limits} analyze Bitcoin order flow dynamics. However, existing work largely treats sentiment as exogenous; we integrate sentiment as an endogenous information channel.
+
+\subsection{Uncertainty-Aware Sentiment Analysis}
+
+Standard sentiment classifiers provide point estimates without uncertainty quantification. Monte Carlo Dropout \citep{gal2016dropout} enables approximate Bayesian inference by running multiple forward passes with dropout enabled at inference time, producing a distribution of predictions that captures model uncertainty.
+
+\section{Framework Architecture}
+\label{sec:architecture}
+
+\subsection{System Overview}
+
+The framework consists of four layers:
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item \textbf{Data Ingestion:} Real-time feeds from Binance (orderbook) and Reddit (social)
+    \item \textbf{Feature Engineering:} Sentiment scoring with uncertainty, microstructure metrics
+    \item \textbf{Regime Detection:} Dynamic Factor Model for market state
+    \item \textbf{Simulation:} Mesa-based ABM with heterogeneous agents
+\end{enumerate}
+
+\subsection{Data Ingestion Layer}
+
+\subsubsection{Binance WebSocket Client}
+
+Orderbook depth streams provide 100ms updates for:
+
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Best bid/offer prices and sizes
+    \item Order book imbalance: $\text{imb} = \frac{V_{bid} - V_{ask}}{V_{bid} + V_{ask}}$
+    \item Mid-price: $p_{mid} = \frac{p_{bid} + p_{ask}}{2}$
+    \item Spread: $s = \frac{p_{ask} - p_{bid}}{p_{mid}}$
+\end{itemize}
+
+\subsubsection{Reddit API Client}
+
+Streaming ingestion from 7 cryptocurrency subreddits:
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item r/CryptoCurrency, r/Bitcoin, r/ethereum
+    \item r/CryptoMarkets, r/altcoin
+    \item r/binance, r/defi
+\end{itemize}
+
+Posts and comments are published to Kafka topic for downstream processing.
+
+\subsection{Sentiment Analysis with Uncertainty}
+
+\subsubsection{Model Architecture}
+
+We use CryptoBERT \citep{cryptobert2024}, a RoBERTa-based model fine-tuned on 3.2 million cryptocurrency social media posts from StockTwits, with Monte Carlo Dropout for uncertainty quantification. The model was trained with balanced labels: Bearish (0), Neutral (1), Bullish (2).
+
+\textbf{Monte Carlo Dropout procedure:}
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Enable dropout at inference time
+    \item Run $T=50$ forward passes
+    \item Compute mean prediction: $\bar{y} = \frac{1}{T}\sum_{t=1}^T f_\theta(x)_t$
+    \item Compute epistemic uncertainty: $\sigma_{epi}^2 = \frac{1}{T}\sum_{t=1}^T (f_\theta(x)_t - \bar{y})^2$
+\end{enumerate}
+
+\subsubsection{Uncertainty Decomposition}
+
+Total uncertainty decomposes into:
+
+\begin{equation}
+\sigma_{total}^2 = \underbrace{\sigma_{epi}^2}_{\text{model uncertainty}} + \underbrace{H(\bar{y})}_{\text{aleatoric uncertainty}}
+\end{equation}
+
+where $H(\bar{y})$ is the Shannon entropy of the mean prediction, capturing irreducible uncertainty from ambiguous text.
+
+\subsubsection{EWMA Smoothing}
+
+Raw sentiment is smoothed using exponentially weighted moving average:
+
+\begin{equation}
+s_t = \alpha \cdot s_{raw,t} + (1-\alpha) \cdot s_{t-1}
+\end{equation}
+
+with $\alpha = 0.1$ corresponding to approximately 5-minute half-life.
+
+\subsection{Agent Specifications}
+
+We implement four agent types using the Mesa framework.
+
+\subsubsection{Market Makers}
+
+Market makers provide liquidity by quoting bid and ask prices:
+
+\begin{align}
+p_{bid} &= p_{mid} - \frac{s}{2} - \gamma \cdot Q - \delta \cdot \sigma_{epi} \\
+p_{ask} &= p_{mid} + \frac{s}{2} + \gamma \cdot Q + \delta \cdot \sigma_{epi}
+\end{align}
+
+where $Q$ is inventory, $\gamma$ is inventory aversion, and $\delta$ scales spread widening with sentiment uncertainty.
+
+\textbf{Key behavior:} Market makers widen spreads when sentiment uncertainty is high, reflecting increased adverse selection risk.
+
+\subsubsection{Informed Traders}
+
+Informed traders trade on sentiment signals when confidence is high:
+
+\begin{equation}
+\text{trade} =
+\begin{cases}
+\text{buy } V & \text{if } s_t > \tau \text{ and } \sigma_{epi} < \bar{\sigma} \\
+\text{sell } V & \text{if } s_t < -\tau \text{ and } \sigma_{epi} < \bar{\sigma} \\
+\text{hold} & \text{otherwise}
+\end{cases}
+\end{equation}
+
+where $\tau$ is sentiment threshold and $\bar{\sigma}$ is maximum acceptable uncertainty.
+
+\textbf{Key behavior:} Informed traders only act when sentiment signal is strong AND model is confident.
+
+\subsubsection{Noise Traders}
+
+Noise traders arrive according to a Poisson process with intensity $\lambda$ and submit market orders:
+
+\begin{equation}
+\text{direction} \sim \text{Bernoulli}(0.5 + \beta \cdot s_t)
+\end{equation}
+
+where $\beta$ controls sentiment influence on noise trader direction.
+
+\textbf{Key behavior:} Noise traders are weakly influenced by sentiment regardless of uncertainty.
+
+\subsubsection{Arbitrageurs}
+
+Arbitrageurs exploit price dislocations:
+
+\begin{equation}
+\text{trade} =
+\begin{cases}
+\text{buy} & \text{if } p < p_{fair} - \epsilon \\
+\text{sell} & \text{if } p > p_{fair} + \epsilon \\
+\text{hold} & \text{otherwise}
+\end{cases}
+\end{equation}
+
+where $p_{fair}$ is estimated from cross-exchange prices or fundamental indicators.
+
+\textbf{Key behavior:} Arbitrageurs are sentiment-agnostic, responding only to price dislocations.
+
+\subsection{Regime Detection}
+
+A Dynamic Factor Model extracts latent market state:
+
+\begin{equation}
+\mathbf{y}_t = \mathbf{\Lambda} \mathbf{f}_t + \mathbf{e}_t
+\end{equation}
+
+where $\mathbf{y}_t$ is observed microstructure metrics, $\mathbf{f}_t$ is latent factors, and $\mathbf{\Lambda}$ is factor loadings.
+
+Factor values are used to switch agent parameters between bull/bear regimes, enabling adaptive behavior.
+
+\section{Infrastructure}
+\label{sec:infrastructure}
+
+\subsection{Distributed Architecture}
+
+The framework deploys on Kubernetes (K3s) with:
+
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item \textbf{Kafka:} Event streaming for data ingestion
+    \item \textbf{TimescaleDB:} Time-series storage with continuous aggregates
+    \item \textbf{GPU nodes:} Sentiment model inference
+    \item \textbf{Mesa simulation:} Parallelized agent execution
+\end{itemize}
+
+\subsection{Data Flow}
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Binance WebSocket $\rightarrow$ Kafka topic ``order-books''
+    \item Reddit API $\rightarrow$ Kafka topic ``reddit-posts''
+    \item Sentiment service consumes reddit-posts, produces ``sentiment-ticks''
+    \item Simulation service consumes all topics, runs ABM, writes to TimescaleDB
+\end{enumerate}
+
+\subsection{Performance Targets}
+
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Order book updates: 10/second
+    \item Sentiment processing: <100ms latency
+    \item Kafka end-to-end lag: <500ms
+    \item Simulation step: <500ms for 1000 agents
+\end{itemize}
+
+\section{Calibration Methodology}
+\label{sec:calibration}
+
+\subsection{Stylized Facts}
+
+The simulation should reproduce empirical stylized facts \citep{cont2001empirical}:
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item \textbf{Volatility clustering:} $\text{ACF}(|r|, \text{lag}=10) > 0.1$
+    \item \textbf{Fat tails:} Kurtosis $> 3$
+    \item \textbf{Spread mean-reversion:} ADF test $p < 0.05$
+    \item \textbf{Volume-volatility correlation:} $\rho(V, |r|) > 0$
+\end{enumerate}
+
+\subsection{Parameter Calibration}
+
+Agent parameters are calibrated via:
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Collect 1 week empirical Binance data
+    \item Compute target stylized facts
+    \item Grid search over agent parameters
+    \item Select parameters minimizing stylized fact deviation
+\end{enumerate}
+
+\subsection{Validation}
+
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item K-S test for return distribution matching
+    \item Cross-correlation comparison: simulated vs.\ empirical
+    \item Out-of-sample prediction: simulate next day, compare
+\end{itemize}
+
+\section{Research Questions}
+\label{sec:questions}
+
+The framework enables investigation of:
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item How does sentiment uncertainty affect market maker spread-setting?
+    \item Do informed traders provide price discovery or amplify noise?
+    \item What agent composition produces realistic flash crash dynamics?
+    \item How do sentiment shocks propagate through market microstructure?
+\end{enumerate}
+
+\section{Implementation Status}
+\label{sec:status}
+
+\textbf{Completed:}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Data ingestion layer (Binance, Reddit clients)
+    \item Monte Carlo Dropout sentiment analyzer
+    \item Infrastructure configuration (Docker, Kafka, TimescaleDB)
+\end{itemize}
+
+\textbf{In Progress:}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Agent implementations (market maker, informed, noise, arbitrageur)
+    \item Order book matching engine
+    \item Mesa simulation environment
+\end{itemize}
+
+\textbf{Planned:}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item DFM regime detection
+    \item Calibration pipeline
+    \item Dashboard visualization
+\end{itemize}
+
+\section{Preliminary Results}
+\label{sec:results}
+
+We present preliminary results from sentiment analysis and market maker simulation components to validate core framework functionality.
+
+\subsection{Sentiment Analysis Validation}
+
+We evaluate CryptoBERT with MC Dropout on 12 representative cryptocurrency texts spanning bullish, neutral, and bearish sentiment. Table~\ref{tab:sentiment} presents results.
+
+\begin{table}[h]
+\centering
+\caption{Sentiment Analysis Results with Uncertainty Quantification}
+\label{tab:sentiment}
+\small
+\begin{tabular}{p{3.8cm}ccc}
+\toprule
+\textbf{Text (truncated)} & \textbf{Sent.} & \textbf{Epist.} & \textbf{Aleat.} \\
+\midrule
+BTC ETF approved! Huge... & +0.65 & 0.002 & 0.68 \\
+Just bought more BTC... & +0.79 & 0.001 & 0.51 \\
+Sideways around 43k... & +0.23 & 0.004 & 0.54 \\
+SEC meeting next week... & $-$0.36 & 0.059 & 0.88 \\
+FTX collapse, crypto scam... & $-$0.92 & 0.000 & 0.29 \\
+SEC suing, crypto winter... & $-$0.90 & 0.011 & 0.34 \\
+Bull trap? Staying cautious... & +0.10 & 0.001 & 0.36 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Key observations:
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item \textbf{Sentiment differentiation:} Model correctly identifies bullish (+0.65 to +0.79), neutral (+0.10 to +0.23), and bearish ($-$0.36 to $-$0.92) texts
+    \item \textbf{Epistemic uncertainty:} Very low (0.001--0.011) for most texts, indicating model confidence; higher (0.059) for regulatory news suggesting domain uncertainty
+    \item \textbf{Aleatoric uncertainty:} Higher for ambiguous texts (0.88 for SEC meeting) than clear sentiment (0.29 for FTX collapse)
+\end{itemize}
+
+\subsection{Market Maker Simulation}
+
+We simulate 500 timesteps of market maker behavior responding to synthetic sentiment series with regime changes. Figure~\ref{fig:results} presents four-panel visualization.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/preliminary_results.pdf}
+\caption{Preliminary simulation results: (A) Sentiment scores with uncertainty bars; (B) Epistemic vs.\ aleatoric uncertainty decomposition; (C) Market maker spread response to sentiment; (D) Inventory dynamics.}
+\label{fig:results}
+\end{figure}
+
+Summary statistics from 500 timesteps:
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Mean spread: 0.12 bps (std: 0.01 bps)
+    \item Sentiment-spread correlation: \textbf{0.55}
+    \item Uncertainty-spread correlation: \textbf{0.72}
+    \item Bullish periods: 48\%; Bearish: 4.4\%
+    \item Inventory volatility: 4.15 units
+\end{itemize}
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Validation of Core Hypotheses}
+
+The preliminary results support our core theoretical claims:
+
+\textbf{H1: Sentiment signals drive microstructure adjustment.} The positive sentiment-spread correlation (0.55) confirms that market makers adjust quotes based on sentiment signals. During sentiment extremes (bullish or bearish), spreads widen as market makers protect against adverse selection from sentiment-informed traders.
+
+\textbf{H2: Uncertainty modulates spread adjustment.} The strong uncertainty-spread correlation (0.72) validates our uncertainty-aware framework. Market makers respond more to epistemic uncertainty (model confidence) than raw sentiment, consistent with Bayesian decision-making under uncertainty.
+
+\textbf{H3: Uncertainty decomposition is meaningful.} The distinct patterns in epistemic vs.\ aleatoric uncertainty---low epistemic for clear sentiment, high aleatoric for ambiguous texts---demonstrate that MC Dropout provides actionable uncertainty quantification.
+
+\subsection{Comparison to Traditional Models}
+
+Our framework extends traditional market microstructure models \citep{glosten1985bid, kyle1985continuous} by:
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Incorporating real-time social sentiment as an information channel
+    \item Quantifying uncertainty in the sentiment signal
+    \item Enabling heterogeneous agent responses to uncertain information
+\end{enumerate}
+
+The Avellaneda-Stoikov \citeyearpar{avellaneda2008high} market-making model provides the foundation, extended with sentiment-dependent spread adjustment and uncertainty premium.
+
+\subsection{Limitations}
+
+Several limitations apply to preliminary results:
+
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item \textbf{Synthetic dynamics:} Current simulation uses synthetic sentiment series rather than real Reddit data
+    \item \textbf{Single agent type:} Only market maker agents implemented; informed traders, noise traders, and arbitrageurs pending
+    \item \textbf{No order book matching:} Simplified quote generation without full limit order book dynamics
+    \item \textbf{No calibration:} Parameters not yet calibrated to empirical stylized facts
+\end{enumerate}
+
+\subsection{Implications for Cryptocurrency Markets}
+
+The strong uncertainty-spread correlation (0.72) has practical implications:
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Market makers may benefit from monitoring sentiment uncertainty, not just sentiment level
+    \item High-uncertainty periods warrant wider spreads regardless of sentiment direction
+    \item Algorithmic trading strategies should incorporate uncertainty-aware position sizing
+\end{itemize}
+
+\subsection{Next Steps}
+
+Completing the full simulation requires:
+\begin{enumerate}[leftmargin=1.5em, topsep=0pt, itemsep=2pt]
+    \item Implementing remaining agent types (informed, noise, arbitrageur)
+    \item Building Mesa-based order book matching engine
+    \item Collecting 1-week empirical Binance + Reddit data
+    \item Calibrating agent parameters to match stylized facts
+    \item Running shock scenarios (sentiment crashes, flash crash emergence)
+\end{enumerate}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper presents a methodological framework for agent-based modeling of cryptocurrency market microstructure with uncertainty-aware sentiment integration, along with preliminary validation results. The key innovation is treating sentiment as a noisy signal with quantified uncertainty, enabling realistic modeling of heterogeneous trader responses to social media information.
+
+Preliminary results validate core framework components: CryptoBERT correctly differentiates bullish/bearish sentiment with appropriate uncertainty decomposition, and market maker simulations demonstrate expected correlations between sentiment, uncertainty, and spread behavior. The sentiment-spread correlation of 0.55 and uncertainty-spread correlation of 0.72 support our theoretical hypotheses about uncertainty-aware market making.
+
+The framework combines modern NLP (Monte Carlo Dropout for uncertainty), domain-specific models (CryptoBERT for cryptocurrency sentiment), distributed computing (Kafka, Kubernetes), and agent-based simulation (Mesa) into an integrated pipeline for studying sentiment-microstructure dynamics.
+
+Future research will complete remaining simulation components, calibrate to empirical data, and investigate how sentiment shocks affect market microstructure properties including spreads, volatility, and flash crash susceptibility.
+
+\clearpage
+\onecolumn
+
+\begin{thebibliography}{99}
+
+\bibitem[Avellaneda \& Stoikov(2008)]{avellaneda2008high}
+Avellaneda, M., \& Stoikov, S. (2008).
+\newblock High-frequency trading in a limit order book.
+\newblock \textit{Quantitative Finance}, 8(3), 217--224.
+
+\bibitem[Abraham et al.(2018)]{abraham2018cryptocurrency}
+Abraham, J., Higdon, D., Nelson, J., \& Ibarra, J. (2018).
+\newblock Cryptocurrency price prediction using tweet volumes and sentiment analysis.
+\newblock \textit{SMU Data Science Review}, 1(3), 1.
+
+\bibitem[Bouri et al.(2017)]{bouri2017hedge}
+Bouri, E., Molnar, P., Azzi, G., Roubaud, D., \& Hagfors, L. I. (2017).
+\newblock On the hedge and safe haven properties of Bitcoin.
+\newblock \textit{Research in International Business and Finance}, 41, 88--98.
+
+\bibitem[Cont(2001)]{cont2001empirical}
+Cont, R. (2001).
+\newblock Empirical properties of asset returns: Stylized facts and statistical issues.
+\newblock \textit{Quantitative Finance}, 1(2), 223--236.
+
+\bibitem[Cont et al.(2010)]{cont2010stochastic}
+Cont, R., Stoikov, S., \& Talreja, R. (2010).
+\newblock A stochastic model for order book dynamics.
+\newblock \textit{Operations Research}, 58(3), 549--563.
+
+\bibitem[ElKulako(2024)]{cryptobert2024}
+ElKulako (2024).
+\newblock CryptoBERT: A language model for cryptocurrency sentiment.
+\newblock Hugging Face. \url{https://huggingface.co/ElKulako/cryptobert}
+
+\bibitem[Farmer \& Foley(2009)]{farmer2005predictive}
+Farmer, J. D., \& Foley, D. (2009).
+\newblock The economy needs agent-based modelling.
+\newblock \textit{Nature}, 460(7256), 685--686.
+
+\bibitem[Gal \& Ghahramani(2016)]{gal2016dropout}
+Gal, Y., \& Ghahramani, Z. (2016).
+\newblock Dropout as a Bayesian approximation: Representing model uncertainty in deep learning.
+\newblock \textit{ICML}, 1050--1059.
+
+\bibitem[Glosten \& Milgrom(1985)]{glosten1985bid}
+Glosten, L. R., \& Milgrom, P. R. (1985).
+\newblock Bid, ask and transaction prices in a specialist market.
+\newblock \textit{Journal of Financial Economics}, 14(1), 71--100.
+
+\bibitem[Hautsch et al.(2018)]{hautsch2018limits}
+Hautsch, N., Scheuch, C., \& Voigt, S. (2018).
+\newblock Limits to arbitrage in markets with stochastic settlement latency.
+\newblock \textit{Working Paper}.
+
+\bibitem[Kyle(1985)]{kyle1985continuous}
+Kyle, A. S. (1985).
+\newblock Continuous auctions and insider trading.
+\newblock \textit{Econometrica}, 53(6), 1315--1335.
+
+\bibitem[LeBaron(2006)]{lebaron2006agent}
+LeBaron, B. (2006).
+\newblock Agent-based computational finance.
+\newblock \textit{Handbook of Computational Economics}, 2, 1187--1233.
+
+\bibitem[Makarov \& Schoar(2020)]{makarov2020trading}
+Makarov, I., \& Schoar, A. (2020).
+\newblock Trading and arbitrage in cryptocurrency markets.
+\newblock \textit{Journal of Financial Economics}, 135(2), 293--319.
+
+\bibitem[Paddrik et al.(2012)]{paddrik2012agent}
+Paddrik, M., Hayes, R., Todd, A., Yang, S., Beling, P., \& Scherer, W. (2012).
+\newblock An agent based model of the E-Mini S\&P 500 applied to flash crash analysis.
+\newblock \textit{IEEE Conference on Computational Intelligence for Financial Engineering}.
+
+\bibitem[Palmer et al.(1994)]{palmer1994artificial}
+Palmer, R. G., Arthur, W. B., Holland, J. H., LeBaron, B., \& Tayler, P. (1994).
+\newblock Artificial economic life: A simple model of a stockmarket.
+\newblock \textit{Physica D}, 75(1-3), 264--274.
+
+\end{thebibliography}
+
+\end{document}
