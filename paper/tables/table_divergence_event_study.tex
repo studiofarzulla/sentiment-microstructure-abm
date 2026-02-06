@@ -1,0 +1,29 @@
+
+\begin{table}[htbp]
+\centering
+\caption{Divergence Event Study: Forward Returns}
+\label{tab:divergence_event_study}
+\begin{tabular}{lccccc}
+\toprule
+ & \multicolumn{5}{c}{Forward Return (\%)} \\
+\cmidrule(lr){2-6}
+Threshold & $N$ & 1-day & 3-day & 5-day & 7-day \\
+\midrule
+$|\text{div}| > 0.3$ & 86 & 0.09 & 0.54 & 0.96 & 1.18 \\
+ & & (0.31) & (1.34) & (1.66) & (1.65) \\
+$|\text{div}| > 0.4$ & 68 & 0.26 & 0.63 & 1.40** & 0.74 \\
+ & & (0.74) & (1.42) & (2.14) & (0.91) \\
+$|\text{div}| > 0.5$ & 40 & 0.87* & 0.59 & 1.87** & 1.92** \\
+ & & (2.01) & (0.96) & (2.57) & (2.25) \\
+
+\bottomrule
+\end{tabular}
+
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Event study results for sentiment divergence (retail minus institutional).
+Events identified where absolute divergence exceeds threshold with minimum 5-day gap between events.
+Returns are mean forward returns. $t$-statistics in parentheses use Newey-West standard errors.
+***, **, * denote significance at 1\%, 5\%, 10\% levels respectively.
+\end{tablenotes}
+\end{table}

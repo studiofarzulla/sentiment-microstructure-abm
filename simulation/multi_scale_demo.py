@@ -120,16 +120,20 @@ def run_single_source_simulation(
     def create_sentiment_gen():
         idx = 0
         current = sentiments[0]
+        decay_factor = 1.0  # Track cumulative decay
 
         def gen(step):
-            nonlocal idx, current
-            if step % 20 == 0 and idx < len(sentiments):
-                current = sentiments[idx]
+            nonlocal idx, current, decay_factor
+            if step % 20 == 0:
+                # Cycle through sentiments (wrap around)
+                current = sentiments[idx % len(sentiments)]
                 idx += 1
+                decay_factor = 1.0  # Reset decay on new news
 
             sent, epi, aleat = current
-            # Decay toward neutral
-            sent *= 0.97
+            # Apply cumulative decay toward neutral
+            decay_factor *= 0.97
+            sent = sent * decay_factor
 
             if sent > 0.2:
                 regime = 'bullish'
@@ -234,9 +238,9 @@ async def run_multi_scale_simulation(
         def gen(step) -> SentimentTick:
             nonlocal idx, current_micro
 
-            # Update micro sentiment periodically
-            if step % 20 == 0 and idx < len(micro_sentiments):
-                current_micro = micro_sentiments[idx]
+            # Update micro sentiment periodically (cycle through)
+            if step % 20 == 0:
+                current_micro = micro_sentiments[idx % len(micro_sentiments)]
                 idx += 1
 
             # Compose blended signal
@@ -392,7 +396,7 @@ async def main():
     logger.info("║    ASRI (Macro) + CryptoBERT (Micro) Blending           ║")
     logger.info("╚" + "═" * 58 + "╝")
 
-    n_steps = 300
+    n_steps = 2000  # Increased for proper regime distribution
     seed = 42
 
     # Run single-source baseline

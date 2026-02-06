@@ -1,0 +1,227 @@
+{
+  "timestamp": "2026-01-09",
+  "markets": [
+    {
+      "slug": "sol-updown-15m-1768014000",
+      "title": "Solana Up or Down - January 9, 10:00PM-10:15PM ET",
+      "coin": "SOL",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 0,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "sol-updown-15m-1768013100",
+      "title": "Solana Up or Down - January 9, 9:45PM-10:00PM ET",
+      "coin": "SOL",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 0,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "btc-updown-15m-1768012200",
+      "title": "Bitcoin Up or Down - January 9, 9:30PM-9:45PM ET",
+      "coin": "BTC",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 2,
+      "activity_prices": [
+        0.5,
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0.0
+    },
+    {
+      "slug": "xrp-updown-15m-1768012200",
+      "title": "XRP Up or Down - January 9, 9:30PM-9:45PM ET",
+      "coin": "XRP",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "sol-updown-15m-1768012200",
+      "title": "Solana Up or Down - January 9, 9:30PM-9:45PM ET",
+      "coin": "SOL",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "xrp-updown-15m-1768011300",
+      "title": "XRP Up or Down - January 9, 9:15PM-9:30PM ET",
+      "coin": "XRP",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 2,
+      "activity_prices": [
+        0.5,
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0.0
+    },
+    {
+      "slug": "sol-updown-15m-1768011300",
+      "title": "Solana Up or Down - January 9, 9:15PM-9:30PM ET",
+      "coin": "SOL",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "eth-updown-15m-1768005000",
+      "title": "Ethereum Up or Down - January 9, 7:30PM-7:45PM ET",
+      "coin": "ETH",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "btc-updown-15m-1768005000",
+      "title": "Bitcoin Up or Down - January 9, 7:30PM-7:45PM ET",
+      "coin": "BTC",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "sol-updown-15m-1768005000",
+      "title": "Solana Up or Down - January 9, 7:30PM-7:45PM ET",
+      "coin": "SOL",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 3.88,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "eth-updown-15m-1768002300",
+      "title": "Ethereum Up or Down - January 9, 6:45PM-7:00PM ET",
+      "coin": "ETH",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 1.960783,
+      "volume_total": 1.960783,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "btc-updown-15m-1768000500",
+      "title": "Bitcoin Up or Down - January 9, 6:15PM-6:30PM ET",
+      "coin": "BTC",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 0,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    },
+    {
+      "slug": "btc-updown-15m-1767998700",
+      "title": "Bitcoin Up or Down - January 9, 5:45PM-6:00PM ET",
+      "coin": "BTC",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_1_week": 0,
+      "volume_total": 0,
+      "status": "open",
+      "activity_count": 1,
+      "activity_prices": [
+        0.5
+      ],
+      "latest_activity_price": 0.5,
+      "price_std": 0
+    }
+  ],
+  "by_coin": {
+    "SOL": 5,
+    "BTC": 4,
+    "XRP": 2,
+    "ETH": 2
+  },
+  "summary": {
+    "n_markets": 13,
+    "mean_sentiment": 0.0,
+    "std_sentiment": 0.0,
+    "total_volume": 33.000783
+  }
+}

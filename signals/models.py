@@ -32,7 +32,13 @@ class MacroSignals:
     peg_stability: Optional[float] = None  # Max peg deviation [0, 1]
     stablecoin_dominance: Optional[float] = None  # USDT+USDC market share
 
-    # TradFi Linkage (from FRED)
+    # Crypto Volatility (Primary - DVOL from Deribit)
+    dvol_level: Optional[float] = None  # Raw DVOL (annualized implied vol %)
+    dvol_normalized: Optional[float] = None  # Normalized to [0, 1]
+    dvol_source: str = "unavailable"  # 'implied', 'realized', 'unavailable'
+    realized_vol_30d: Optional[float] = None  # 30-day realized BTC vol (fallback)
+
+    # TradFi Linkage (from FRED) - Secondary contagion signal
     vix_level: Optional[float] = None  # Raw VIX
     vix_normalized: Optional[float] = None  # Normalized to typical range
     treasury_10y: Optional[float] = None  # 10Y Treasury yield
@@ -60,10 +66,16 @@ class MacroSignals:
         return self.vix_level is not None
 
     @property
+    def has_crypto_vol_data(self) -> bool:
+        """Whether we have crypto-native volatility data (DVOL or realized)."""
+        return self.dvol_level is not None or self.realized_vol_30d is not None
+
+    @property
     def data_completeness(self) -> float:
         """Fraction of optional fields that are populated."""
         optional_fields = [
             self.total_tvl, self.tvl_change_24h, self.peg_stability,
+            self.dvol_level or self.realized_vol_30d,  # Crypto vol (either source)
             self.vix_level, self.treasury_10y, self.btc_spy_correlation,
             self.asri_composite
         ]

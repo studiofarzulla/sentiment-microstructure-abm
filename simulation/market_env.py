@@ -530,6 +530,110 @@ class CryptoMarketModel(Model):
 
         return self.history
 
+    def run_replay(
+        self,
+        replay_ticks,
+        price_tracking: bool = True,
+        log_interval: int = 100,
+    ) -> List[dict]:
+        """
+        Run simulation driven by historical replay data.
+
+        This method allows the simulation to be driven by real historical data
+        rather than synthetic generators. The order book price is anchored to
+        real prices while agents interact.
+
+        Args:
+            replay_ticks: Iterable of ReplayTick objects from DataReplayLoader
+            price_tracking: If True, adjust order book prices toward real prices
+            log_interval: Steps between progress logging
+
+        Returns:
+            List of history records
+
+        Example:
+            from simulation.data_replay import DataReplayLoader
+            
+            loader = DataReplayLoader()
+            loader.load_orderbook_data("binance_data.csv")
+            loader.load_sentiment_data("sentiment_data.csv")
+            
+            model = create_default_market(initial_price=42000)
+            history = model.run_replay(loader.replay(step_interval_ms=500))
+        """
+        step_count = 0
+        
+        for tick in replay_ticks:
+            # Update sentiment from historical data
+            self.set_sentiment(
+                tick.sentiment,
+                tick.epistemic_uncertainty,
+                tick.aleatoric_uncertainty,
+                tick.regime,
+            )
+            
+            # Optionally anchor price to historical data
+            if price_tracking and tick.mid_price > 0:
+                self._anchor_price_to_real(tick.mid_price)
+            
+            # Run one simulation step
+            self.step()
+            
+            # Progress logging
+            step_count += 1
+            if step_count % log_interval == 0:
+                mid = self.order_book.mid_price
+                spread = self.order_book.spread_bps
+                mid_str = f"{mid:.2f}" if mid is not None else "N/A"
+                spread_str = f"{spread:.2f}" if spread is not None else "N/A"
+                logger.info(
+                    f"Replay step {step_count}: sim_mid={mid_str}, "
+                    f"real_mid={tick.mid_price:.2f}, "
+                    f"spread={spread_str}bps, sent={tick.sentiment:+.2f}"
+                )
+                
+                # Reseed if depleted
+                if mid is None:
+                    logger.warning("Order book depleted, reseeding...")
+                    self._seed_liquidity()
+        
+        logger.info(f"Replay complete: {step_count} steps")
+        return self.history
+
+    def _anchor_price_to_real(self, target_price: float, strength: float = 0.1):
+        """
+        Gradually adjust internal prices toward real market price.
+        
+        This prevents the simulated price from drifting too far from reality
+        while still allowing agent dynamics to create microstructure.
+        
+        Args:
+            target_price: Real market mid price to anchor toward
+            strength: How strongly to pull toward real price (0-1)
+        """
+        current_mid = self.order_book.mid_price
+        if current_mid is None:
+            # No current price, reset around target
+            self._last_known_price = target_price
+            self._seed_liquidity()
+            return
+        
+        # Calculate drift
+        price_diff = target_price - current_mid
+        relative_diff = abs(price_diff) / current_mid
+        
+        # Only anchor if drift is significant (>1%)
+        if relative_diff > 0.01:
+            # Adjustment is proportional to drift and strength
+            adjustment = price_diff * strength
+            self._last_known_price = current_mid + adjustment
+            
+            # Reseed with adjusted price if drift is very large (>5%)
+            if relative_diff > 0.05:
+                logger.debug(f"Large price drift ({relative_diff:.1%}), reseeding...")
+                self.order_book.reset()
+                self._seed_liquidity()
+
 
 def create_default_market(
     n_market_makers: int = 2,

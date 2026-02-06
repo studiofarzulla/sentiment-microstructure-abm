@@ -1,0 +1,80 @@
+{
+  "markets": [
+    {
+      "slug": "nba-dal-uta-2026-01-08-total-243pt5",
+      "title": "Mavericks vs. Jazz: O/U 243.5",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 2694726.2677720003
+    },
+    {
+      "slug": "nba-okc-mem-2026-01-09-total-231pt5",
+      "title": "Thunder vs. Grizzlies: O/U 231.5",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 181312.285936
+    },
+    {
+      "slug": "nba-nop-was-2026-01-09-total-240pt5",
+      "title": "Pelicans vs. Wizards: O/U 240.5",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 164010.506666
+    },
+    {
+      "slug": "nba-okc-mem-2026-01-09-spread-away-3pt5",
+      "title": "Spread: Thunder (-3.5)",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 144052.32149600005
+    },
+    {
+      "slug": "nba-okc-mem-2026-01-09-total-234pt5",
+      "title": "Thunder vs. Grizzlies: O/U 234.5",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 144052.32149600005
+    },
+    {
+      "slug": "us-strikes-iran-by-january-11-2026-946",
+      "title": "US strikes Iran by January 11, 2026?",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 101986.038864
+    },
+    {
+      "slug": "cfb-mia-miss-2026-01-08-total-53pt5",
+      "title": "Miami vs. Ole Miss: O/U 53.5",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 49357.104958
+    },
+    {
+      "slug": "nba-hou-por-2026-01-09-total-220pt5",
+      "title": "Rockets vs. Trail Blazers: O/U 220.5",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 27488.197767
+    },
+    {
+      "slug": "nba-lac-bkn-2026-01-09-total-213pt5",
+      "title": "Clippers vs. Nets: O/U 213.5",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 25930.910251999994
+    },
+    {
+      "slug": "nba-lac-bkn-2026-01-09-spread-away-3pt5",
+      "title": "Spread: Clippers (-3.5)",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_total": 25930.910251999994
+    }
+  ],
+  "analysis": {
+    "n_markets": 10,
+    "mean_sentiment": 0.0,
+    "std_sentiment": 0.0,
+    "non_neutral_count": 0
+  }
+}

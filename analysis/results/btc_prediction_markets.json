@@ -1,0 +1,31 @@
+{
+  "markets": [
+    {
+      "slug": "btc-updown-15m-1768012200",
+      "question": "Bitcoin Up or Down - January 9, 9:30PM-9:45PM ET",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume": 0.0
+    },
+    {
+      "slug": "btc-updown-15m-1768005000",
+      "question": "Bitcoin Up or Down - January 9, 7:30PM-7:45PM ET",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume": 0.0
+    },
+    {
+      "slug": "btc-updown-15m-1767998700",
+      "question": "Bitcoin Up or Down - January 9, 5:45PM-6:00PM ET",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume": 0.0
+    }
+  ],
+  "summary": {
+    "mean_price": 0.5,
+    "mean_sentiment": 0.0,
+    "std_sentiment": 0.0,
+    "total_volume": 0
+  }
+}

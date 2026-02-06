@@ -2,7 +2,7 @@
 Analysis module for Sentiment-Microstructure ABM.
 
 Provides statistical analysis, regime analysis, sensitivity analysis,
-and figure generation for paper results.
+ablation studies, and figure generation for paper results.
 """
 
 from .statistical_analysis import (
@@ -29,6 +29,13 @@ from .figure_generation import (
     FARZULLA_BURGUNDY,
 )
 
+from .ablation_analysis import (
+    run_full_ablation_study,
+    AblationConfig,
+    AblationRunner,
+    AblationExporter,
+)
+
 __all__ = [
     # Statistical analysis
     'compute_return_statistics',
@@ -48,4 +55,9 @@ __all__ = [
     'plot_regime_dynamics',
     'plot_sensitivity_heatmap',
     'FARZULLA_BURGUNDY',
+    # Ablation analysis
+    'run_full_ablation_study',
+    'AblationConfig',
+    'AblationRunner',
+    'AblationExporter',
 ]

@@ -1,0 +1,17 @@
+\begin{table}
+\caption{Ablation study: Effect of macro/micro blending weights on market dynamics. $w_{\text{macro}}=0$ corresponds to CryptoBERT-only signals.}
+\label{tab:ablation_blending}
+\begin{tabular}{lrrrrr}
+\toprule
+ & $w_{\text{micro}}$ & $\rho(\text{Spread}, U)$ & $\sigma_r$ & $\bar{s}$ (bps) & Regime Persist. \\
+$w_{\text{macro}}$ &  &  &  &  &  \\
+\midrule
+0.000000 & 1.0000 & -0.0349 & 0.0001 & 2.9353 & 0.9888 \\
+0.150000 & 0.8500 & -0.0102 & 0.0001 & 3.6381 & 0.9888 \\
+0.300000 & 0.7000 & -0.0210 & 0.0000 & 2.7725 & 0.9888 \\
+0.450000 & 0.5500 & -0.0446 & 0.0001 & 3.0671 & 0.9888 \\
+0.600000 & 0.4000 & -0.0311 & 0.0001 & 3.4133 & 0.9888 \\
+0.750000 & 0.2500 & -0.0244 & 0.0001 & 3.4160 & 0.9888 \\
+\bottomrule
+\end{tabular}
+\end{table}

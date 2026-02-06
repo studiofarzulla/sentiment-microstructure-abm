@@ -245,6 +245,114 @@ def compute_correlation_matrix(df: pd.DataFrame, columns: List[str] = None) -> p
     return df[columns].corr()
 
 
+def compare_configurations(
+    single_df: pd.DataFrame,
+    multi_df: pd.DataFrame,
+    n_bootstrap: int = 1000,
+    seed: int = 42
+) -> Dict[str, Any]:
+    """
+    Compare single-source vs multi-scale configurations with statistical tests.
+
+    Performs:
+    - Welch's t-test for volatility and spread differences
+    - Bootstrap confidence intervals
+    - Effect size (Cohen's d)
+
+    Args:
+        single_df: Single-source simulation results
+        multi_df: Multi-scale simulation results
+        n_bootstrap: Number of bootstrap samples
+        seed: Random seed for reproducibility
+
+    Returns:
+        Dictionary with comparison statistics
+    """
+    np.random.seed(seed)
+
+    # Compute returns
+    single_prices = single_df['mid_price'].dropna()
+    multi_prices = multi_df['mid_price'].dropna()
+
+    single_returns = np.diff(np.log(single_prices))
+    multi_returns = np.diff(np.log(multi_prices))
+
+    # Annualization factor (assuming minute-level data)
+    ann_factor = np.sqrt(252 * 24 * 60)
+
+    # Volatility comparison
+    single_vol = np.std(single_returns) * ann_factor
+    multi_vol = np.std(multi_returns) * ann_factor
+
+    # Welch's t-test on returns (testing if distributions differ)
+    t_returns, p_returns = scipy_stats.ttest_ind(single_returns, multi_returns, equal_var=False)
+
+    # Spread comparison
+    single_spreads = single_df['spread_bps'].dropna()
+    multi_spreads = multi_df['spread_bps'].dropna()
+
+    t_spread, p_spread = scipy_stats.ttest_ind(single_spreads, multi_spreads, equal_var=False)
+
+    # Effect size (Cohen's d) for spreads
+    pooled_std = np.sqrt((single_spreads.std()**2 + multi_spreads.std()**2) / 2)
+    cohens_d = (single_spreads.mean() - multi_spreads.mean()) / pooled_std
+
+    # Bootstrap CI for volatility difference
+    def bootstrap_vol_diff(single_ret, multi_ret, n_boot):
+        diffs = []
+        n_single, n_multi = len(single_ret), len(multi_ret)
+        for _ in range(n_boot):
+            boot_single = np.random.choice(single_ret, n_single, replace=True)
+            boot_multi = np.random.choice(multi_ret, n_multi, replace=True)
+            diff = np.std(boot_single) * ann_factor - np.std(boot_multi) * ann_factor
+            diffs.append(diff)
+        return np.percentile(diffs, [2.5, 97.5])
+
+    vol_diff_ci = bootstrap_vol_diff(single_returns, multi_returns, n_bootstrap)
+
+    # Bootstrap CI for spread difference
+    def bootstrap_mean_diff(a, b, n_boot):
+        diffs = []
+        for _ in range(n_boot):
+            boot_a = np.random.choice(a, len(a), replace=True)
+            boot_b = np.random.choice(b, len(b), replace=True)
+            diffs.append(boot_a.mean() - boot_b.mean())
+        return np.percentile(diffs, [2.5, 97.5])
+
+    spread_diff_ci = bootstrap_mean_diff(single_spreads.values, multi_spreads.values, n_bootstrap)
+
+    # Mann-Whitney U test (non-parametric alternative)
+    u_spread, p_mann = scipy_stats.mannwhitneyu(single_spreads, multi_spreads, alternative='two-sided')
+
+    return {
+        'volatility': {
+            'single_source': single_vol,
+            'multi_scale': multi_vol,
+            'difference': single_vol - multi_vol,
+            'reduction_pct': (single_vol - multi_vol) / single_vol * 100,
+            'bootstrap_ci_95': vol_diff_ci.tolist(),
+            't_statistic': t_returns,
+            'p_value': p_returns,
+        },
+        'spread': {
+            'single_source_mean': single_spreads.mean(),
+            'multi_scale_mean': multi_spreads.mean(),
+            'difference': single_spreads.mean() - multi_spreads.mean(),
+            'reduction_pct': (single_spreads.mean() - multi_spreads.mean()) / single_spreads.mean() * 100,
+            'cohens_d': cohens_d,
+            'bootstrap_ci_95': spread_diff_ci.tolist(),
+            't_statistic': t_spread,
+            'p_value': p_spread,
+            'mann_whitney_u': u_spread,
+            'mann_whitney_p': p_mann,
+        },
+        'sample_sizes': {
+            'single_source': len(single_df),
+            'multi_scale': len(multi_df),
+        }
+    }
+
+
 def run_all_diagnostics(df: pd.DataFrame) -> Dict[str, Any]:
     """
     Run all statistical diagnostics on simulation data.

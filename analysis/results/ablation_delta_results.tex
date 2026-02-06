@@ -1,0 +1,17 @@
+\begin{table}
+\caption{Ablation study: Effect of uncertainty sensitivity parameter $\delta$ on market dynamics. $\delta=0$ represents baseline (no uncertainty-based spread widening). $\rho(\cdot)$ denotes Pearson correlation, $\sigma_r$ return volatility, $\bar{s}$ mean spread, $\bar{D}$ mean regime duration.}
+\label{tab:ablation_delta}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & $\rho(\text{Spread}, U)$ & $\rho(\text{Spread}, \epsilon)$ & $\rho(\text{Spread}, \alpha)$ & $\sigma_r$ & $\bar{s}$ (bps) & $\bar{D}_{\text{regime}}$ \\
+$\delta$ &  &  &  &  &  &  \\
+\midrule
+0.000000 & -0.0168 & 0.0001 & -0.0366 & 0.0001 & 2.1895 & 58.2976 \\
+0.500000 & -0.0261 & -0.0304 & 0.0063 & 0.0000 & 2.2391 & 58.2976 \\
+1.000000 & -0.0592 & -0.0922 & 0.0587 & 0.0000 & 2.8481 & 58.2976 \\
+1.500000 & -0.0210 & -0.0563 & 0.0672 & 0.0000 & 2.7725 & 58.2976 \\
+2.000000 & -0.0114 & -0.0893 & 0.1518 & 0.0000 & 3.8207 & 58.2976 \\
+2.500000 & -0.0357 & -0.0645 & 0.0522 & 0.0000 & 3.8569 & 58.2976 \\
+\bottomrule
+\end{tabular}
+\end{table}

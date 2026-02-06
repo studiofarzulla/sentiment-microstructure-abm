@@ -1,0 +1,22 @@
+
+\begin{table}[h!]
+\centering
+\caption{DVOL-Based Regime Uncertainty}
+\label{tab:dvol_regimes}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{DVOL Regime} & \textbf{N} & \textbf{Mean Unc.} & \textbf{$\Delta$ vs Neutral} & \textbf{Coef.} & \textbf{p-value} \\
+\midrule
+Extreme Greed & 148 & 0.213 & -47.6\% & -0.037 & 0.060 \\
+Greed & 148 & 0.340 & -16.5\% & -0.008 & 0.623 \\
+Neutral (ref) & 148 & 0.407 & --- & --- & --- \\
+Fear & 148 & 0.440 & +8.0\% & 0.012 & 0.472 \\
+Extreme Fear & 148 & 0.493 & +21.2\% & -0.010 & 0.669 \\
+\bottomrule
+\end{tabular}
+\vspace{0.3em}
+\caption*{\footnotesize \textit{Notes:} DVOL quintile classification from Deribit implied
+volatility data (Jan 2024--Jan 2026). Coefficients from regression with Parkinson volatility
+control. Extreme regimes pooled: $d = -0.36$.}
+\end{table}

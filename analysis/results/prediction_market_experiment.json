@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-01-09T03:04:28.440949",
+  "markets_found": [
+    {
+      "slug": "will-gavin-newsom-win-the-2028-us-presidential-election",
+      "question": "Will Gavin Newsom win the 2028 US Presidential Election?",
+      "price": 0.5,
+      "sentiment": 0.0,
+      "volume_24h": 106636.94694714273
+    }
+  ],
+  "uncertainty_analysis": {
+    "n_markets": 1,
+    "mean_sentiment": 0.0,
+    "std_sentiment": 0.0,
+    "weighted_sentiment": 0.0,
+    "mean_price": 0.5,
+    "price_range": [
+      0.5,
+      0.5
+    ],
+    "mean_extremity": 0.0,
+    "total_volume_24h": 106636.94694714273,
+    "epistemic_uncertainty": 0.0
+  },
+  "fear_greed_comparison": {},
+  "microstructure": {},
+  "conclusions": [
+    "\u26a0 Only found 1 markets - limited for cross-market analysis"
+  ]
+}

@@ -7,20 +7,21 @@ authors:
     orcid: "https://orcid.org/0009-0002-7164-8704"
     email: "murad@farzulla.org"
     affiliation: "Farzulla Research"
-title: "Sentiment-Driven Market Microstructure: An Agent-Based Modeling Framework for Cryptocurrency Markets"
-abstract: "This paper presents a methodological framework for agent-based modeling (ABM) of cryptocurrency market microstructure with real-time sentiment integration. The proposed architecture combines three novel components: (1) a Monte Carlo Dropout sentiment analyzer providing uncertainty-aware sentiment scores from social media streams, (2) a heterogeneous agent population including market makers, informed traders, noise traders, and arbitrageurs with sentiment-responsive behavior rules, and (3) a dynamic factor model (DFM) for regime detection enabling adaptive agent parameterization."
+title: "Multi-Scale Sentiment and Market Microstructure: An Agent-Based Framework for Cryptocurrency Markets"
+abstract: "This paper presents a multi-scale sentiment analysis framework for agent-based modeling (ABM) of cryptocurrency market microstructure. We introduce a novel architecture that blends institutional-level macro signals—derived from the Aggregated Systemic Risk Index (ASRI) framework—with retail-level micro signals from social media sentiment analysis using CryptoBERT with Monte Carlo Dropout uncertainty quantification. The key innovation is a regime-adaptive weighting mechanism that dynamically adjusts the influence of macro versus micro sentiment based on detected market conditions."
 keywords:
   - agent-based modeling
   - market microstructure
   - sentiment analysis
-  - Monte Carlo dropout
+  - multi-scale
+  - ASRI
   - cryptocurrency
+  - Monte Carlo dropout
   - uncertainty quantification
-  - Kafka
-  - heterogeneous agents
-version: "1.0.0"
-date-released: "2025-12-17"
+  - regime detection
+version: "2.1.0"
+date-released: "2025-12-21"
 license: "CC-BY-4.0"
-doi: "10.5281/zenodo.17957746"
+doi: "10.5281/zenodo.17989810"
 repository-code: "https://github.com/studiofarzulla/sentiment-microstructure-abm"
 url: "https://farzulla.org"
